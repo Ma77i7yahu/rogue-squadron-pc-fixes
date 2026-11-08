@@ -819,3 +819,39 @@ Every 'old' value below has been checked against the original exe.
   off 201D80  (VA 00603580 .data)  width dword 0x500, off 201D84 height dword 0x400
   The installer writes the chosen 16:9 size here (default 1920x1080 = 80 07 00 00 / 38 04 00 00).
 
+
+==============================================================================
+[gunsight] Single solid orange crosshair (13 bytes)
+==============================================================================
+  off 022329  (VA 00422F29)  8b4d -> eb3e
+        ; big ring sprite: skip its draw-list insert (normal view)
+        00422F29  eb3e                   jmp 0x422f69
+  off 0227A9  (VA 004233A9)  8b45 -> eb4d
+        ; big ring sprite: skip its draw-list insert (torpedo view)
+        004233A9  eb4d                   jmp 0x4233f8
+  off 022E5A, 022E61  (VA 00423A5A, 00423A61)  00 -> ff, ff -> 80
+        ; crosshair colour R,G,B 00 FF 00 (green) -> FF 80 00 (orange), path 1
+        00423A58  c602ff                 mov byte ptr [edx], 0xff
+        00423A5B  8b4508                 mov eax, dword ptr [ebp + 8]
+        00423A5E  c6400180               mov byte ptr [eax + 1], 0x80
+        00423A62  8b4d08                 mov ecx, dword ptr [ebp + 8]
+        00423A65  c6410200               mov byte ptr [ecx + 2], 0
+  off 022EA9, 022EB0  (VA 00423AA9, 00423AB0)  00 -> ff, ff -> 80
+        ; same, path 2
+        00423AA7  c600ff                 mov byte ptr [eax], 0xff
+        00423AAA  8b4d08                 mov ecx, dword ptr [ebp + 8]
+        00423AAD  c6410180               mov byte ptr [ecx + 1], 0x80
+        00423AB1  8b5508                 mov edx, dword ptr [ebp + 8]
+        00423AB4  c6420200               mov byte ptr [edx + 2], 0
+  off 022EEA, 022EF1, 022EFF  (VA 00423AEA, 00423AF1, 00423AFF)  00 -> ff, ff -> 80, 64 -> c8
+        ; same, path 3 (fixed opacity 100 -> 200)
+        00423AE8  c602ff                 mov byte ptr [edx], 0xff
+        00423AEB  8b4508                 mov eax, dword ptr [ebp + 8]
+        00423AEE  c6400180               mov byte ptr [eax + 1], 0x80
+        00423AF2  8b4d08                 mov ecx, dword ptr [ebp + 8]
+        00423AF5  c6410200               mov byte ptr [ecx + 2], 0
+        00423AF9  8b5508                 mov edx, dword ptr [ebp + 8]
+        00423AFC  c64203c8               mov byte ptr [edx + 3], 0xc8
+  off 1BEC98  (VA 005BF898 .rdata)  0000c842 -> 00004843
+        ; crosshair opacity scale 100.0 -> 200.0 (only used by the colour function's two fading paths)
+

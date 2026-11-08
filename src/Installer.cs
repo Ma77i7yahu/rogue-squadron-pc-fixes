@@ -210,6 +210,14 @@ class InstallerForm : Form {
             "losing its R2 unit, these craft stop repairing for the rest of that life once their health drops below " +
             "a quarter (there's no droid speech, as there's no droid). The Falcon keeps repairing as in the stock game.\r\n\r\n" +
             "Status: repair tested by our tester; the below-a-quarter cut-off is new, not yet flown.");
+        Check(g4, "gunsight", "Single solid orange crosshair",
+            "The crosshair is two green rings: a big one close to the craft that the lasers never go through, and a " +
+            "small one further out where the shots actually meet. The pale green is also hard to see against the " +
+            "terrain.\r\n\r\n" +
+            "Removes the big ring (also in the torpedo targeting view), so the crosshair is the small ring only, and " +
+            "draws it in solid orange at twice the stock opacity, matching the Battle for Naboo mod. Aiming is " +
+            "unchanged. Missile and torpedo lock markers keep their colours.\r\n\r\n" +
+            "Status: tested.");
 
         // info box
         info.Multiline = true; info.ReadOnly = true; info.ScrollBars = ScrollBars.Vertical;
@@ -373,7 +381,7 @@ class InstallerForm : Form {
 
         // reflect what is installed now (defaults for a clean exe)
         bool clean = ReferenceEquals(baseExe, cur);
-        foreach (var k in new[] { "deadzone", "aimassist", "linear", "smallmoves", "widescreen", "ceiling" })
+        foreach (var k in new[] { "deadzone", "aimassist", "linear", "smallmoves", "widescreen", "ceiling", "gunsight" })
             Set(k, clean || PatchFor(k).IsIn(cur));
         Set("convergence", !clean && PatchFor("convergence").IsIn(cur));
         int button = 9;
@@ -393,7 +401,7 @@ class InstallerForm : Form {
     byte[] Build(List<string> applied) {
         var keys = new List<string>();
         // convergence before rlflight: RL flight's code goes into the section convergence adds
-        foreach (var k in new[] { "deadzone", "aimassist", "linear", "widescreen", "ceiling", "smallmoves", "convergence", "rlflight", "lasers", "mission7", "repair" })
+        foreach (var k in new[] { "deadzone", "aimassist", "linear", "widescreen", "ceiling", "smallmoves", "convergence", "rlflight", "lasers", "mission7", "repair", "gunsight" })
             if (On(k)) keys.Add(k);
         if (keys.Contains("rlflight") && !keys.Contains("convergence")) throw new InvalidOperationException("Rogue Leader flight needs laser convergence.");
         if (keys.Contains("convergence")) keys.Remove("aimassist");

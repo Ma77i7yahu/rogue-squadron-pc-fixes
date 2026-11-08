@@ -15,7 +15,7 @@ Add `/define:STEAM` or `/define:GOG` for the Steam or GOG build.
 
 ## Regenerating the patches
 
-`src/build.cmd` runs `gen.py` first, which rebuilds `PatchData.cs` and `PATCHES.txt` by comparing a set of tested variant exes against the original v1.2 exe. Those exes are modified copies of the game's exe, so they aren't in this repo. The `build_*.py` scripts produce them from the original exe and the assembly in `src/caves/`.
+`src/build.cmd` runs `gen.py` first, which rebuilds `PatchData.cs` and `PATCHES.txt` by comparing a set of tested variant exes against the original v1.2 exe. Those exes are modified copies of the game's exe, so they aren't in this repo. The `build_*.py` scripts produce them from the original exe and the assembly in `src/caves/`. The crosshair option is the exception: `gen.py` doesn't know it, so its 13 bytes were added to `PatchData.cs` by hand from `build_gunsight.py`. Keep that block if you regenerate.
 
 The scripts were written for one machine, so check the paths at the top of each before running them:
 

@@ -29,6 +29,7 @@ The installer only accepts the unmodified v1.2 exe (2,492,928 bytes, MD5 `2D5EE8
 | T-16 Skyhopper as a selectable craft | Off | Tested in full missions |
 | Any craft on Imperial Construction Yards (mission 7) | Off | Tested (T-16 there not yet flown) |
 | Every craft repairs itself | Off | Repair tested; 25% cut-off not yet flown |
+| Single solid orange crosshair | On | Tested |
 
 Laser auto-convergence uses the game's own targeting, so it replaces "Remove aim assist" (the installer won't let you tick both). Rogue Leader style flight shares convergence's code section, so it switches convergence on with it; you can still turn convergence off in the game. Everything else can be combined freely. Laser auto-convergence and the T-16 each add their own code section to the exe.
 
@@ -126,6 +127,11 @@ A level's craft list starts from its default craft, and the X-wing, A-wing and V
 In the stock game, the craft with an astromech droid or a crew slowly repair damage, at 1/180 of full health per second (full repair in 3 minutes). These are the X-wing, Y-wing, Naboo starfighter and Millennium Falcon. The A-wing, V-wing, airspeeder, TIE Interceptor and T-16 don't repair at all. This mod rewrites the repair function in place (same size, `src/caves/repair_all.s`) so every craft repairs at that rate.
 
 In the stock game the X-wing, Y-wing and Naboo starfighter lose their droid when their health drops below a quarter (you hear R2 get hit), and then stop repairing for the rest of that life. The mod gives the A-wing, V-wing, airspeeder, TIE Interceptor and T-16 the same cut-off, without the droid speech. It uses the same "droid lost" flag, which on these craft does nothing else. The Millennium Falcon has a crew rather than a droid, so it keeps repairing at any health, as in the stock game. Repair stays off where the game turns it off for everyone.
+
+### Single solid orange crosshair
+The crosshair is two green rings: a big one drawn close to the craft and a small one further out. The lasers meet the small one; the big one sits well below it from the chase camera and only confuses where the shots go. The pale, half see-through green is also hard to see against the terrain.
+
+This removes the big ring, in normal flight and in the torpedo targeting view, so the crosshair is the small ring only. It's drawn in orange at twice the stock opacity (200/255 instead of 100/255), matching the Battle for Naboo mod. The big ring's position and fade are still worked out, because the torpedo view's small ring takes its fade from it; it just isn't drawn. Aiming is unchanged, and missile and torpedo lock markers keep their colours. 13 bytes (`src/build_gunsight.py`).
 
 ## Not included
 - **DxWrapper, dinput.dll camera fix, rsLauncher, wingman.dll:** these are third-party files some setups use. They're not part of these mods and the installer doesn't touch them.
