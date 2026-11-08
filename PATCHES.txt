@@ -1,0 +1,821 @@
+Star Wars: Rogue Squadron 3D (PC v1.2) - complete patch listing
+Base exe: Rogue Squadron.EXE, 2492928 bytes, MD5 2D5EE8852EB99F329318325C51742324
+off = file offset; VA = virtual address in the loaded exe (image base 0x400000).
+Every 'old' value below has been checked against the original exe.
+
+==============================================================================
+[deadzone] Remove per-craft stick deadzones  (20 changes)
+==============================================================================
+  off 00B17A  (VA 0040BD7A .text)  cdcccc3d -> 00000000
+        ; float 0.10 -> 0
+  off 00B187  (VA 0040BD87 .text)  cdcccc3d -> 00000000
+        ; float 0.10 -> 0
+  off 015C5A  (VA 0041685A .text)  cdcccc3d -> 00000000
+        ; float 0.10 -> 0
+  off 015C67  (VA 00416867 .text)  cdcccc3d -> 00000000
+        ; float 0.10 -> 0
+  off 0172F4  (VA 00417EF4 .text)  cdcccc3d -> 00000000
+        ; float 0.10 -> 0
+  off 017301  (VA 00417F01 .text)  cdcccc3d -> 00000000
+        ; float 0.10 -> 0
+  off 0182BD  (VA 00418EBD .text)  cdcccc3d -> 00000000
+        ; float 0.10 -> 0
+  off 0182CA  (VA 00418ECA .text)  cdcccc3d -> 00000000
+        ; float 0.10 -> 0
+  off 019B07  (VA 0041A707 .text)  cdcc4c3e -> 00000000
+        ; float 0.20 -> 0
+  off 019B14  (VA 0041A714 .text)  9a99193e -> 00000000
+        ; float 0.15 -> 0
+  off 01BD44  (VA 0041C944 .text)  cdcccc3d -> 00000000
+        ; float 0.10 -> 0
+  off 01BD51  (VA 0041C951 .text)  cdcccc3d -> 00000000
+        ; float 0.10 -> 0
+  off 01EF4F  (VA 0041FB4F .text)  803e -> 0000
+        ; float 0.25 -> 0
+  off 01EF5C  (VA 0041FB5C .text)  803e -> 0000
+        ; float 0.25 -> 0
+  off 023A17  (VA 00424617 .text)  cdcccc3d -> 00000000
+        ; float 0.10 -> 0
+  off 023A24  (VA 00424624 .text)  cdcccc3d -> 00000000
+        ; float 0.10 -> 0
+  off 025040  (VA 00425C40 .text)  cdcccc3d -> 00000000
+        ; float 0.10 -> 0
+  off 02504D  (VA 00425C4D .text)  9a99193e -> 00000000
+        ; float 0.15 -> 0
+  off 077673  (VA 00478273 .text)  cdcc4c3e -> 00000000
+        ; float 0.20 -> 0
+  off 077680  (VA 00478280 .text)  9a99193e -> 00000000
+        ; float 0.15 -> 0
+
+==============================================================================
+[aimassist] Remove aim assist (all craft except the Falcon)  (7 changes)
+==============================================================================
+  off 00C19A  (VA 0040CD9A .text)  ea46773f -> 00000040
+        ; A-wing: target cone cos 0.9659 (15.0 deg) -> 2.0 (never matches)
+  off 017BEB  (VA 004187EB .text)  b6f37d3f -> 00000040
+        ; TIE Interceptor: target cone cos 0.9920 (7.3 deg) -> 2.0 (never matches)
+  off 018DE3  (VA 004199E3 .text)  b6f37d3f -> 00000040
+        ; Naboo starfighter: target cone cos 0.9920 (7.3 deg) -> 2.0 (never matches)
+  off 01B448  (VA 0041C048 .text)  08ac7c3f -> 00000040
+        ; Snowspeeder: target cone cos 0.9870 (9.2 deg) -> 2.0 (never matches)
+  off 0200D5  (VA 00420CD5 .text)  08ac7c3f -> 00000040
+        ; V-wing: target cone cos 0.9870 (9.2 deg) -> 2.0 (never matches)
+  off 024964  (VA 00425564 .text)  b6f37d3f -> 00000040
+        ; X-wing: target cone cos 0.9920 (7.3 deg) -> 2.0 (never matches)
+  off 025535  (VA 00426135 .text)  3d0a773f -> 00000040
+        ; Y-wing ion turret: target cone cos 0.9650 (15.2 deg) -> 2.0 (never matches)
+
+==============================================================================
+[linear] Linear stick response (no squaring)  (1 changes)
+==============================================================================
+  off 00E351  (VA 0040EF51 .text)  d945 -> eb4d
+        ; skip the X*|X| stick squaring (jmp over it)
+        0040EF51  eb4d                 jmp 0x40efa0
+
+==============================================================================
+[widescreen] 16:9 widescreen (Hor+) with terrain, radar and draw-distance fixes  (8 changes)
+==============================================================================
+  off 0001D8  (PE header)  99df -> 00e0
+        ; .text VirtualSize 0x1BDF99 -> 0x1BE000 so the code caves at 5BEFA0.. are mapped
+  off 079D44  (VA 0047A944 .text)  b81e05 -> 4b7e31
+        ; radar map sideways scale: 0.1300 -> 0.1733
+  off 079D5B  (VA 0047A95B .text)  cdcc0c -> bcbb3b
+        ; radar map sideways position: 0.5500 -> 0.7333
+  off 0D4A62  (VA 004D5662 .text)  d80df4076500 -> e839990e0090
+        ; terrain distance: call cave that multiplies it by 1.16
+        004D5662  e839990e00           call 0x5befa0
+        004D5667  90                   nop
+  off 0D4B23  (VA 004D5723 .text)  d905b43f7000 -> e88c980e0090
+        ; terrain grid: call cave that clamps the 4 frustum corners to camera +-30.5 cells (stops the 64x64 grid overflowing, e.g. Moff Seerden's shuttle scene)
+        004D5723  e88c980e00           call 0x5befb4
+        004D5728  90                   nop
+  off 16E042  (VA 0056EC42 .text)  abaaaa -> 398ee3
+        ; renderer aspect ratio (4/3 -> 16/9, Hor+): 1.3333 -> 1.7778
+  off 1BE3A0  (VA 005BEFA0 .text)  000000000000000000000000000000000000000000000000...(96 bytes) -> d80df4076500d80db0ef5b00c3000000e17a943fb8a40865...(96 bytes)
+        ; code caves in .text padding (+ constants at 5BEFF0: 30.5, 1e30, 30.5, 1e30)
+        005BEFA0  d80df4076500         fmul dword ptr [0x6507f4]
+        005BEFA6  d80db0ef5b00         fmul dword ptr [0x5befb0]
+        005BEFAC  c3                   ret
+        005BEFB0  e17a943f             dd 1.16
+        005BEFB4  b8a4086500           mov eax, 0x6508a4
+        005BEFB9  0f100d98086500       movups xmm1, xmmword ptr [0x650898]
+        005BEFC0  0f57d2               xorps xmm2, xmm2
+        005BEFC3  0f5c15f0ef5b00       subps xmm2, xmmword ptr [0x5beff0]
+        005BEFCA  0f1000               movups xmm0, xmmword ptr [eax]
+        005BEFCD  0f5cc1               subps xmm0, xmm1
+        005BEFD0  0f5d05f0ef5b00       minps xmm0, xmmword ptr [0x5beff0]
+        005BEFD7  0f5fc2               maxps xmm0, xmm2
+        005BEFDA  0f58c1               addps xmm0, xmm1
+        005BEFDD  0f1100               movups xmmword ptr [eax], xmm0
+        005BEFE0  040c                 add al, 0xc
+        005BEFE2  3cd4                 cmp al, 0xd4
+        005BEFE4  72e4                 jb 0x5befca
+        005BEFE6  d905b43f7000         fld dword ptr [0x703fb4]
+        005BEFEC  c3                   ret
+        005BEFF0  0000f441caf249710000f441caf24971 dd 30.5, 1e+30, 30.5, 1e+30
+  off 1C0944  (VA 005C1544 .rdata)  000080 -> abaaaa
+        ; terrain view-pyramid corner x (-4 -> -16/3): -4.0000 -> -5.3333
+
+==============================================================================
+[smallmoves] Small stick movement fix  (3 changes)
+==============================================================================
+  off 00F948  (VA 00410548 .text)  f45b -> 045c
+        ; rate cut-off fcomp: 0.1 deg/frame -> existing 0.001 constant at 5C04C8
+        00410545  dc1dc8045c00         fcomp qword ptr [0x5c04c8]
+  off 00F979  (VA 00410579 .text)  f45b -> 045c
+        ; rate cut-off fcomp: 0.1 deg/frame -> existing 0.001 constant at 5C04C8
+        00410576  dc1dc8045c00         fcomp qword ptr [0x5c04c8]
+  off 00F9AA  (VA 004105AA .text)  f45b -> 045c
+        ; rate cut-off fcomp: 0.1 deg/frame -> existing 0.001 constant at 5C04C8
+        004105A7  dc1dc8045c00         fcomp qword ptr [0x5c04c8]
+
+==============================================================================
+[ceiling] Airspeeder ceiling 10 -> 20 above the ground  (1 changes)
+==============================================================================
+  off 019A1D  (VA 0041A61D .text)  00002041 -> 0000a041
+        ; airspeeder init (mov [rec+0x108], imm): ceiling above the terrain 10 -> 20
+
+==============================================================================
+[mission7] Any craft on Imperial Construction Yards (mission 7)  (4 changes)
+==============================================================================
+  off 03C2CB  (VA 0043CECB .text)  518b4508ba010000008b0c8598845f00d3e28955fc -> 8b45088b0c8598845f0031d23c060f94c20fabca52
+        ; hangar craft mask fn 43CEC8: mask = 1 << default craft, plus the X-wing bit when level == 6
+        0043CECB  8b4508               mov eax, dword ptr [ebp + 8]
+        0043CECE  8b0c8598845f00       mov ecx, dword ptr [eax*4 + 0x5f8498]
+        0043CED5  31d2                 xor edx, edx
+        0043CED7  3c06                 cmp al, 6
+        0043CED9  0f94c2               sete dl
+        0043CEDC  0fabca               bts edx, ecx
+        0043CEDF  52                   push edx
+  off 03C41A  (VA 0043D01A .text)  06 -> ff
+        ; speeder-only level list: cmp [ebp+8], 6 -> -1 (Imperial Construction Yards no longer listed)
+        0043D017  837d08ff             cmp dword ptr [ebp + 8], -1
+        0043D01B  740c                 je 0x43d029
+  off 03C44D  (VA 0043D04D .text)  518b4508ba010000008b0c8598845f00d3e28955fc -> 8b45088b0c8598845f0031d23c060f94c20fabca52
+        ; full-unlock mask fn 43D04A (menus): same prologue change
+        0043D04D  8b4508               mov eax, dword ptr [ebp + 8]
+        0043D050  8b0c8598845f00       mov ecx, dword ptr [eax*4 + 0x5f8498]
+        0043D057  31d2                 xor edx, edx
+        0043D059  3c06                 cmp al, 6
+        0043D05B  0f94c2               sete dl
+        0043D05E  0fabca               bts edx, ecx
+        0043D061  52                   push edx
+  off 03C52B  (VA 0043D12B .text)  06 -> ff
+        ; speeder-only level list: cmp [ebp+8], 6 -> -1 (Imperial Construction Yards no longer listed)
+        0043D128  837d08ff             cmp dword ptr [ebp + 8], -1
+        0043D12C  740c                 je 0x43d13a
+
+==============================================================================
+[repair] Every craft repairs itself like the X-wing  (1 changes)
+==============================================================================
+  off 00DFE8  (VA 0040EBE8 .text)  558bec518b4508d980c0000000d81d58f45b00dfe0f6c441...(230 bytes) -> 5589e58b4d0883b9c0000000000f8e90000000833d085570...(230 bytes)
+        ; repair fn 40EBE8 rewritten in place (src/caves/repair_all.s): every craft repairs; A, V, speeder, TIE and T-16 clear the R2 flag 5E9384 (= stop repairing) below 25% health
+        0040EBE8  55                   push ebp
+        0040EBE9  89e5                 mov ebp, esp
+        0040EBEB  8b4d08               mov ecx, dword ptr [ebp + 8]
+        0040EBEE  83b9c000000000       cmp dword ptr [ecx + 0xc0], 0
+        0040EBF5  0f8e90000000         jle 0x40ec8b
+        0040EBFB  833d0855700003       cmp dword ptr [0x705508], 3
+        0040EC02  0f8483000000         je 0x40ec8b
+        0040EC08  803d84935e0000       cmp byte ptr [0x5e9384], 0
+        0040EC0F  747a                 je 0x40ec8b
+        0040EC11  0fb791b4000000       movzx edx, word ptr [ecx + 0xb4]
+        0040EC18  d981c0000000         fld dword ptr [ecx + 0xc0]
+        0040EC1E  d899c4000000         fcomp dword ptr [ecx + 0xc4]
+        0040EC24  dfe0                 fnstsw ax
+        0040EC26  f6c440               test ah, 0x40
+        0040EC29  7560                 jne 0x40ec8b
+        0040EC2B  b8dc000000           mov eax, 0xdc
+        0040EC30  0fa3d0               bt eax, edx
+        0040EC33  7322                 jae 0x40ec57
+        0040EC35  d981c0000000         fld dword ptr [ecx + 0xc0]
+        0040EC3B  d8b1c4000000         fdiv dword ptr [ecx + 0xc4]
+        0040EC41  d81de8f45b00         fcomp dword ptr [0x5bf4e8]
+        0040EC47  dfe0                 fnstsw ax
+        0040EC49  f6c401               test ah, 1
+        0040EC4C  7409                 je 0x40ec57
+        0040EC4E  c60584935e0000       mov byte ptr [0x5e9384], 0
+        0040EC55  eb34                 jmp 0x40ec8b
+        0040EC57  d981c4000000         fld dword ptr [ecx + 0xc4]
+        0040EC5D  d83568f45b00         fdiv dword ptr [0x5bf468]
+        0040EC63  d84d0c               fmul dword ptr [ebp + 0xc]
+        0040EC66  d881c0000000         fadd dword ptr [ecx + 0xc0]
+        0040EC6C  d991c0000000         fst dword ptr [ecx + 0xc0]
+        0040EC72  d899c4000000         fcomp dword ptr [ecx + 0xc4]
+        0040EC78  dfe0                 fnstsw ax
+        0040EC7A  f6c441               test ah, 0x41
+        0040EC7D  750c                 jne 0x40ec8b
+        0040EC7F  8b81c4000000         mov eax, dword ptr [ecx + 0xc4]
+        0040EC85  8981c0000000         mov dword ptr [ecx + 0xc0], eax
+        0040EC8B  89ec                 mov esp, ebp
+        0040EC8D  5d                   pop ebp
+        0040EC8E  c3                   ret
+        0040EC8F  90                   nop
+        0040EC90  cc                   int3
+        0040EC91  cc                   int3
+        0040EC92  cc                   int3
+        0040EC93  cc                   int3
+        0040EC94  cc                   int3
+        0040EC95  cc                   int3
+        0040EC96  cc                   int3
+        0040EC97  cc                   int3
+        0040EC98  cc                   int3
+        0040EC99  cc                   int3
+        0040EC9A  cc                   int3
+        0040EC9B  cc                   int3
+        0040EC9C  cc                   int3
+        0040EC9D  cc                   int3
+        0040EC9E  cc                   int3
+        0040EC9F  cc                   int3
+        0040ECA0  cc                   int3
+        0040ECA1  cc                   int3
+        0040ECA2  cc                   int3
+        0040ECA3  cc                   int3
+        0040ECA4  cc                   int3
+        0040ECA5  cc                   int3
+        0040ECA6  cc                   int3
+        0040ECA7  cc                   int3
+        0040ECA8  cc                   int3
+        0040ECA9  cc                   int3
+        0040ECAA  cc                   int3
+        0040ECAB  cc                   int3
+        0040ECAC  cc                   int3
+        0040ECAD  cc                   int3
+        0040ECAE  cc                   int3
+        0040ECAF  cc                   int3
+        0040ECB0  cc                   int3
+        0040ECB1  cc                   int3
+        0040ECB2  cc                   int3
+        0040ECB3  cc                   int3
+        0040ECB4  cc                   int3
+        0040ECB5  cc                   int3
+        0040ECB6  cc                   int3
+        0040ECB7  cc                   int3
+        0040ECB8  cc                   int3
+        0040ECB9  cc                   int3
+        0040ECBA  cc                   int3
+        0040ECBB  cc                   int3
+        0040ECBC  cc                   int3
+        0040ECBD  cc                   int3
+        0040ECBE  cc                   int3
+        0040ECBF  cc                   int3
+        0040ECC0  cc                   int3
+        0040ECC1  cc                   int3
+        0040ECC2  cc                   int3
+        0040ECC3  cc                   int3
+        0040ECC4  cc                   int3
+        0040ECC5  cc                   int3
+        0040ECC6  cc                   int3
+        0040ECC7  cc                   int3
+        0040ECC8  cc                   int3
+        0040ECC9  cc                   int3
+        0040ECCA  cc                   int3
+        0040ECCB  cc                   int3
+        0040ECCC  cc                   int3
+        0040ECCD  cc                   int3
+
+==============================================================================
+[convergence] Laser auto-convergence (in-game toggle; replaces aim assist)  (24 changes)
+==============================================================================
+  off 0000DE  (PE header)  05 -> 06
+        ; NumberOfSections 5 -> 6
+  off 000129  (PE header)  f03f -> 0040
+        ; SizeOfImage
+  off 000298  (PE header)  0000000000000000000000000000000000000000000000 -> 2e636f6e760000000010000000f03f0000100000000a26
+        ; new section header
+  off 0002BC  (PE header)  00000000 -> 200000e0
+        ; section characteristics RWX code
+  off 00BD1F  (VA 0040C91F .text)  83c41c5dc3 -> e9dc263f00
+        ; target finder wrapper 40C8FC end: jmp to convergence cave (moves the aim point onto the nose line)
+        0040C91F  e9dc263f00           jmp 0x7ff000
+        0040C924  55                   push ebp
+  off 0DC299  (VA 004DCE99 .text)  8b55e88955c0837dc0067402eb17 -> e962223200909090909090909090
+        ; settings store Get: GENERAL option 5 (Laser Convergence) -> cave
+        004DCE99  e962223200           jmp 0x7ff100
+        004DCE9E  90                   nop (x9)
+  off 0DC3EE  (VA 004DCFEE .text)  8b550c8955f4837df4067402eb17 -> e94d213200909090909090909090
+        ; settings store Set: GENERAL option 5 (Laser Convergence) -> cave
+        004DCFEE  e94d213200           jmp 0x7ff140
+        004DCFF3  90                   nop (x9)
+  off 0DC54B  (VA 004DD14B .text)  e85660 -> 00f47f
+        ; settings help-text table 6056E8 -> copy in .conv with the convergence line
+  off 0DC55F  (VA 004DD15F .text)  e85660 -> 00f47f
+        ; settings help-text table 6056E8 -> copy in .conv with the convergence line
+  off 0DC579  (VA 004DD179 .text)  ec5660 -> 04f47f
+        ; settings help-text table 6056E8 -> copy in .conv with the convergence line
+  off 0DC5A5  (VA 004DD1A5 .text)  ec5660 -> 04f47f
+        ; settings help-text table 6056E8 -> copy in .conv with the convergence line
+  off 1BEA74  (VA 005BF674 .rdata)  cdcc4c -> 000080
+        ; fraction of the turn toward the aim point a bolt makes: 0.8000 -> 1.0000
+  off 1BEAAC  (VA 005BF6AC .rdata)  cdcccc3ecdcc4c -> 0000803f000080
+        ; fraction of the turn toward the aim point a bolt makes: 0.4000 -> 1.0000
+  off 1BEB2C  (VA 005BF72C .rdata)  9a9919 -> 000080
+        ; fraction of the turn toward the aim point a bolt makes: 0.6000 -> 1.0000
+  off 1BEC00  (VA 005BF800 .rdata)  cdcccc3ecdcc4c3f9a9919 -> 0000803f0000803f000080
+        ; fraction of the turn toward the aim point a bolt makes: 0.4000 -> 1.0000
+  off 1BECE0  (VA 005BF8E0 .rdata)  cdcccc3ecdcc4c -> 0000803f000080
+        ; fraction of the turn toward the aim point a bolt makes: 0.4000 -> 1.0000
+  off 260A00  (VA 007FF000 .conv)  NEW SECTION data, 168 bytes.
+        Assembly source: src/caves/laser_convergence.s (+ build_conv.py)
+        83c41c6683f8ff0f8493000000803da5377000000f85880000008b4d088b550c
+        f30f1002f30f5c01f30f104a04f30f5c4904f30f105208f30f5c5108f30f5941
+        0cf30f594910f30f595114f30f58c1f30f58c2f30f5f0500f37f00f30f110544
+        f37f00ff0540f37f00f30f10490cf30f59c8f30f5809f30f110af30f104910f3
+        0f59c8f30f584904f30f114a04f30f104914f30f59c8f30f584908f30f114a08
+        5dc366b8ffff5dc3
+  off 260B00  (VA 007FF100 .conv)  NEW SECTION data, 42 bytes.
+        Assembly source: src/caves/laser_convergence.s (+ build_conv.py)
+        8b55e883fa06741c83fa0575118b4d1831c0803da5377000000f94c0890168be
+        ce4d00c368a7ce4d00c3
+  off 260B40  (VA 007FF140 .conv)  NEW SECTION data, 36 bytes.
+        Assembly source: src/caves/laser_convergence.s (+ build_conv.py)
+        8b550c83fa06741683fa05750b837d18000f9405a53770006813d04d00c368fc
+        cf4d00c3
+  off 260D02  (VA 007FF302 .conv)  NEW SECTION data, 2 bytes.
+        Assembly source: src/caves/laser_convergence.s (+ build_conv.py)
+        803f
+  off 260E00  (VA 007FF400 .conv)  NEW SECTION data, 1231 bytes.
+        Assembly source: src/caves/laser_convergence.s (+ build_conv.py)
+        b85b6000c85b6000105c6000205c6000545c6000645c6000985c6000a85c6000
+        105d6000205d6000605d6000705d6000b05d6000c05d6000185e6000285e6000
+        945e6000a45e6000005f6000145f6000545f6000645f6000bc5f6000c85f6000
+        086060001460600048606000586060009c606000ac606000e4606000f4606000
+        2c6160003c6160007c6160008c616000c4616000d46160001462600024626000
+        8c6260009c626000046360001463600054636000646360009c636000ac636000
+        fc636000106460004864600054646000b4646000c0646000206560002c656000
+        8c65600098656000f86560000c6660005466600060666000c4666000d0666000
+        04676000106760004467600050676000bc676000cc6760002068600030686000
+        8468600094686000e8686000f86860004c69600060696000a4696000b8696000
+        fc696000086a60006c6a6000786a6000dc6a6000f06a6000246b6000386b6000
+        6c6b6000806b6000a86b6000bc6b6000286c6000386c60006c6c60007c6c6000
+        b06c6000c06c6000f06c6000006d60006c6d6000806d6000b46d6000c86d6000
+        fc6d6000106e6000386e60004c6e6000b86e6000c86e60001c6f60002c6f6000
+        846f6000946f6000d06f6000dc6f60000870600014706000407060004c706000
+        7870600084706000b0706000bc706000e8706000f4706000207160002c716000
+        54716000607160008871600094716000bc716000c8716000f471600000726000
+        2c726000387260006472600070726000a4726000b0726000e4726000f0726000
+        24736000307360006873600074736000ac736000b8736000f0736000fc736000
+        5c74600068746000907460009c746000c4746000d07460001c75600028756000
+        7475600080756000e0756000ec756000407660004c766000807660008c766000
+        ec766000f8766000607760006c776000bc776000c87760001478600020786000
+        6c78600078786000c8786000d4786000207960002c7960005c79600068796000
+        98796000a4796000d4796000e0796000107a60001c7a60004c7a6000587a6000
+        887a6000947a6000f47a6000007b6000487b6000547b6000947b6000a07b6000
+        e87b6000f47b60001c7c6000287c6000507c60005c7c6000847c6000907c6000
+        c47c6000d07c6000087d6000147d6000747d6000807d6000a87d6000b47d6000
+        dc7d6000e87d6000347e6000407e60008c7e6000987e6000f87e6000047f6000
+        387f6000447f6000a47f6000b07f600018806000248060007480600080806000
+        cc806000d88060002481600030816000808160008c816000e0816000ec816000
+        4482600050826000ac826000b88260001483600020836000708360007c836000
+        c0836000cc836000108460001c8460006084600074846000a8846000bc846000
+        f084600004856000508560005c856000908560009c856000d4856000e0856000
+        408660004c8660007486600080866000a8866000b4866000008760000c876000
+        5887600064876000c4876000d08760000488600010886000708860007c886000
+        e4886000f0886000408960004c89600098896000a4896000f0896000fc896000
+        4c8a6000588a6000ac8a6000b88a6000108b60001c8b6000788b6000848b6000
+        e08b6000ec8b60003c8c6000488c6000908c60009c8c6000e48c6000f08c6000
+        388d6000448d600000fa7f0020fa7f
+  off 261400  (VA 007FFA00 .conv)  NEW SECTION data, 12 bytes.
+        Assembly source: src/caves/laser_convergence.s (+ build_conv.py)
+        67656e6572616c626f785f38
+  off 261420  (VA 007FFA20 .conv)  NEW SECTION data, 93 bytes.
+        Assembly source: src/caves/laser_convergence.s (+ build_conv.py)
+        2f5458545f4558505f47454e4552414c424f585f382f5768656e206f6e2c206c
+        617365727320636f6e7665726765206174207468652072616e6765206f662074
+        68652074617267657420696e20796f75722063726f737368616972732e
+  off 2619FC  (VA 007FFFFC .conv)  NEW SECTION data, 4 bytes.
+        Assembly source: src/caves/laser_convergence.s (+ build_conv.py)
+
+==============================================================================
+[rlflight] Rogue Leader style flight + tight-turn button (code in .conv)  (9 changes)
+==============================================================================
+  off 00E930  (VA 0040F530 .text)  8b55088b82b8000000 -> e9cb053f0090909090
+        ; flight fn 40F530: jmp to Rogue Leader turn cave (yaw)
+        0040F530  e9cb053f00           jmp 0x7ffb00
+        0040F535  90                   nop (x4)
+  off 00EF7D  (VA 0040FB7D .text)  8b4508d980dc000000d8a544ffffff8b4d08d999dc000000 -> e97e013f0090909090909090909090909090909090909090
+        ; flight fn 40FB7D: jmp to Rogue Leader cave (auto tight-turn pull)
+        0040FB7D  e97e013f00           jmp 0x7ffd00
+        0040FB82  90                   nop (x19)
+  off 00F92E  (VA 0041052E .text)  8b4d08d981d8000000 -> e94df83e0090909090
+        ; flight fn 41052E: jmp to Rogue Leader cave (final roll rate)
+        0041052E  e94df83e00           jmp 0x7ffd80
+        00410533  90                   nop (x4)
+  off 261500  (VA 007FFB00 .conv)  NEW SECTION data, 414 bytes.
+        Assembly source: src/caves/rl_flight.s (+ build_rlflight.py)
+        31c0803dc87f5f00007419ff3568ff7f008b4508ffb0b8000000b8ec884600ff
+        d083c408a38cff7f000fb60d00817000890d98ff7f004983f902770383c801f3
+        0f100500ff7f00f30f104d0c85c0740ef30f590d14ff7f00f30f58c1eb0cf30f
+        590d18ff7f00f30f5cc1f30f5f053cff7f00f30f5d0560ff7f00f30f110500ff
+        7f008b45088b80b80000006bc014f30f108824697000f30f5f0d64ff7f00f30f
+        5d0d60ff7f000f28d10f541540ff7f000f28e90f542d50ff7f00f30f59c2f30f
+        590520ff7f00f30f580560ff7f00f30f59051cff7f00f30f59c2f30f110580ff
+        7f008b55e8891508ff7f00f30f104a140f540d40ff7f00f30f5c0d74ff7f00f3
+        0f590d78ff7f00f30f10157cff7f00f30f5c5210f30f5915a0ff7f00f30f5fca
+        f30f5f0d00ff7f00f30f5f0d3cff7f00f30f5d0d60ff7f00f30f110d70ff7f00
+        f30f105a0cf30f1062100f57dd0f28f0f30f59f40f57f50f573550ff7f00f30f
+        107dfcf30f5cfef30f593d70ff7f00f30f58f7f30f1175fcf30f59c3f30f5945
+        0cf30f110504ff7f00ff0590ff7f008b55088b82b80000006839f54000c3
+  off 261700  (VA 007FFD00 .conv)  NEW SECTION data, 424 bytes.
+        Assembly source: src/caves/rl_flight.s (+ build_rlflight.py)
+        8b45088b88b80000006bc914f30f1089206970000f540d40ff7f00f30f5d0d60
+        ff7f00f30f590d00ff7f00f30f590d24ff7f00f30f580d60ff7f00f30f109544
+        fffffff30f5c1504ff7f00f30f591570ff7f00f30f581504ff7f00f30f1080dc
+        000000f30f59c1f30f5cc2f30f1180dc0000006895fb4000c300000000000000
+        8b4d088b1508ff7f0085d20f8401010000f30f1042100f2f0534ff7f000f82ef
+        000000f30f105a0cf30f111d0cff7f00f30f59dbf30f102560ff7f00f30f5ce3
+        f30f5f253cff7f00f30f51e4f30f112510ff7f00d9050cff7f00d90510ff7f00
+        d9f3d80d38ff7f00d91d0cff7f008b81b80000006bc014f30f108824697000f3
+        0f5f0d64ff7f00f30f5d0d60ff7f000f28d10f541540ff7f00f30f59caf30f59
+        0d28ff7f00f30f110d88ff7f00f30f10050cff7f00f30f110584ff7f00f30f5c
+        c8f30f590d2cff7f00f30f101530ff7f00f30f5dca0f571550ff7f00f30f5fca
+        f30f594d0c0f570d50ff7f00f30f1091e0000000f30f5cd1f30f591570ff7f00
+        f30f58caf30f1189e0000000ff0594ff7f00c70508ff7f0000000000d981d800
+        00006837054100c3
+  off 261914  (VA 007FFF14 .conv)  NEW SECTION data, 12 bytes.
+        Assembly source: src/caves/rl_flight.s (+ build_rlflight.py)
+        555555405555554000001042
+  off 26192A  (VA 007FFF2A .conv)  NEW SECTION data, 64 bytes.
+        Assembly source: src/caves/rl_flight.s (+ build_rlflight.py)
+        48420000004000001643cdcccc3de12e654200000000ffffff7fffffff7fffff
+        ff7fffffff7f000000800000008000000080000000800000803f000080bf0001
+  off 261974  (VA 007FFF74 .conv)  NEW SECTION data, 12 bytes.
+        Assembly source: src/caves/rl_flight.s (+ build_rlflight.py)
+        e8d5123f5d4e8240cdcccc3e
+  off 2619A0  (VA 007FFFA0 .conv)  NEW SECTION data, 4 bytes.
+        Assembly source: src/caves/rl_flight.s (+ build_rlflight.py)
+        55555540
+
+==============================================================================
+[lasers] Faster lasers (player bolt speed x2)  (20 changes)
+==============================================================================
+  off 00BEA5  (VA 0040CAA5 .text)  70 -> f0
+  off 00C197  (VA 0040CD97 .text)  70 -> f0
+  off 0161B0  (VA 00416DB0 .text)  48 -> c8
+  off 016209  (VA 00416E09 .text)  48 -> c8
+  off 0178E1  (VA 004184E1 .text)  48 -> c8
+  off 017BE8  (VA 004187E8 .text)  48 -> c8
+  off 018B03  (VA 00419703 .text)  70 -> f0
+  off 018DE0  (VA 004199E0 .text)  70 -> f0
+  off 01AB4A  (VA 0041B74A .text)  48 -> c8
+  off 01ABCF  (VA 0041B7CF .text)  48 -> c8
+  off 01AC22  (VA 0041B822 .text)  48 -> c8
+  off 01AC82  (VA 0041B882 .text)  48 -> c8
+  off 01B445  (VA 0041C045 .text)  48 -> c8
+  off 01C281  (VA 0041CE81 .text)  48 -> c8
+  off 01FC07  (VA 00420807 .text)  48 -> c8
+  off 0200D2  (VA 00420CD2 .text)  48 -> c8
+  off 02451E  (VA 0042511E .text)  48 -> c8
+  off 024961  (VA 00425561 .text)  48 -> c8
+  off 0254DA  (VA 004260DA .text)  48 -> c8
+  off 025532  (VA 00426132 .text)  20 -> a0
+
+==============================================================================
+[t16] T-16 Skyhopper as a selectable craft (.t16 section at VA 007FF000)  (87 changes)
+==============================================================================
+  off 01BD9E  (VA 0041C99E .text)  9a99993e -> cdcccc3d
+  off 01BDC5  (VA 0041C9C5 .text)  9a99993e -> cdcccc3d
+  off 01C271  (VA 0041CE71 .text)  83c4188b45cc -> e80d233e0090
+  off 01C2DA  (VA 0041CEDA .text)  326a646a31 -> 286a5a6a02
+  off 01C49D  (VA 0041D09D .text)  6c1e00 -> 89203e
+  off 01C50D  (VA 0041D10D .text)  08 -> 28
+  off 01C79B  (VA 0041D39B .text)  8b4df88b91bc00000052e8b67516008b45f88b0851e82b3d...(40 bytes) -> e8806700006a00e8b31a000083c4048b4df88b91bc000000...(40 bytes)
+  off 023324  (VA 00423F24 .text)  83c4188b15fc4d7000 -> e8c1b93d0090909090
+  off 03B2D6  (VA 0043BED6 .text)  ff -> 06
+  off 03C443  (VA 0043D043 .text)  8b45fc8be55dc3 -> e9b81f3c009090
+  off 03C60F  (VA 0043D20F .text)  ff -> 05
+  off 0407DF  (VA 004413DF .text)  a1484270 -> e93bdc3b
+  off 040837  (VA 00441437 .text)  f88464 -> 41f47f
+  off 04092E  (VA 0044152E .text)  681a5f -> 80f47f
+  off 040C72  (VA 00441872 .text)  30 -> 31
+  off 041052  (VA 00441C52 .text)  bf1300 -> 3cd43b
+  off 041086  (VA 00441C86 .text)  30 -> 31
+  off 041164  (VA 00441D64 .text)  04dd02 -> 56d33b
+  off 041431  (VA 00442031 .text)  2b9a08 -> b5d03b
+  off 04166D  (VA 0044226D .text)  c59808 -> 8dce3b
+  off 041A5D  (VA 0044265D .text)  30 -> 31
+  off 041D77  (VA 00442977 .text)  83bd6cffffff08 -> e8bdc63b009090
+  off 041D8E  (VA 0044298E .text)  581a5f -> 00f47f
+  off 0421FA  (VA 00442DFA .text)  83bd6cffffff08 -> e83ac23b009090
+  off 04229C  (VA 00442E9C .text)  8b856cffffffc704850c84640000000000 -> e8b3c13b00909090909090909090909090
+  off 04237F  (VA 00442F7F .text)  581a5f -> 00f47f
+  off 0423DB  (VA 00442FDB .text)  581a5f -> 00f47f
+  off 042549  (VA 00443149 .text)  681a5f -> 80f47f
+  off 0425A3  (VA 004431A3 .text)  701a5f -> 90f47f
+  off 042603  (VA 00443203 .text)  30 -> 31
+  off 042C2A  (VA 0044382A .text)  581a5f -> 00f47f
+  off 042C50  (VA 00443850 .text)  581a5f -> 00f47f
+  off 042FE0  (VA 00443BE0 .text)  781a5f -> c0f47f
+  off 042FFC  (VA 00443BFC .text)  781a5f -> c0f47f
+  off 043018  (VA 00443C18 .text)  781a5f -> c0f47f
+  off 04304A  (VA 00443C4A .text)  981a5f -> f0f47f
+  off 043066  (VA 00443C66 .text)  981a5f -> f0f47f
+  off 043082  (VA 00443C82 .text)  981a5f -> f0f47f
+  off 0430C2  (VA 00443CC2 .text)  681a5f -> 80f47f
+  off 0430F7  (VA 00443CF7 .text)  781a5f -> c0f47f
+  off 04310E  (VA 00443D0E .text)  781a5f -> c0f47f
+  off 04312A  (VA 00443D2A .text)  781a5f -> c0f47f
+  off 043147  (VA 00443D47 .text)  781a5f -> c0f47f
+  off 0432DD  (VA 00443EDD .text)  781a5f -> c0f47f
+  off 0432F8  (VA 00443EF8 .text)  781a5f -> c0f47f
+  off 043315  (VA 00443F15 .text)  781a5f -> c0f47f
+  off 04334D  (VA 00443F4D .text)  981a5f -> f0f47f
+  off 043364  (VA 00443F64 .text)  981a5f -> f0f47f
+  off 043380  (VA 00443F80 .text)  981a5f -> f0f47f
+  off 04339D  (VA 00443F9D .text)  981a5f -> f0f47f
+  off 043533  (VA 00444133 .text)  981a5f -> f0f47f
+  off 04354E  (VA 0044414E .text)  981a5f -> f0f47f
+  off 04356B  (VA 0044416B .text)  981a5f -> f0f47f
+  off 043698  (VA 00444298 .text)  681a5f -> 80f47f
+  off 0436E4  (VA 004442E4 .text)  781a5f -> c0f47f
+  off 0436FD  (VA 004442FD .text)  981a5f -> f0f47f
+  off 043744  (VA 00444344 .text)  981a5f -> f0f47f
+  off 0437D2  (VA 004443D2 .text)  781a5f -> c0f47f
+  off 043A60  (VA 00444660 .text)  581a5f -> 00f47f
+  off 043B20  (VA 00444720 .text)  701a5f -> 90f47f
+  off 043CF0  (VA 004448F0 .text)  33c98a0dd881640083f906750cc785e4feffff00000000eb...(42 bytes) -> 0fb60dd88164000fb689a0f47f00898de4feffffe9110000...(42 bytes)
+  off 043D31  (VA 00444931 .text)  701a5f -> 90f47f
+  off 043D53  (VA 00444953 .text)  701a5f -> 90f47f
+  off 043D99  (VA 00444999 .text)  33c0a0d881640085c0750cc785e0feffff06000000eb1133...(40 bytes) -> 0fb60dd88164000fb689b0f47f00898de0feffffe90f0000...(40 bytes)
+  off 043DD8  (VA 004449D8 .text)  701a5f -> 90f47f
+  off 043DFA  (VA 004449FA .text)  701a5f -> 90f47f
+  off 043E3B  (VA 00444A3B .text)  701a5f -> 90f47f
+  off 043E87  (VA 00444A87 .text)  701a5f -> 90f47f
+  off 043FE0  (VA 00444BE0 .text)  6e1a5f -> 86f47f
+  off 04433B  (VA 00444F3B .text)  581a5f -> 00f47f
+  off 0443E3  (VA 00444FE3 .text)  581a5f -> 00f47f
+  off 0448E7  (VA 004454E7 .text)  d80c8db41a5f00 -> e87f9b3b009090
+  off 044AA0  (VA 004456A0 .text)  581a5f -> 00f47f
+  off 045257  (VA 00445E57 .text)  781a5f -> c0f47f
+  off 045273  (VA 00445E73 .text)  781a5f -> c0f47f
+  off 045290  (VA 00445E90 .text)  781a5f -> c0f47f
+  off 0452B7  (VA 00445EB7 .text)  981a5f -> f0f47f
+  off 0452D3  (VA 00445ED3 .text)  981a5f -> f0f47f
+  off 0452EF  (VA 00445EEF .text)  981a5f -> f0f47f
+  off 04538E  (VA 00445F8E .text)  581a5f -> 00f47f
+  off 0454DE  (VA 004460DE .text)  581a5f -> 00f47f
+  off 0463A4  (VA 00446FA4 .text)  681a5f -> 80f47f
+  off 0463B6  (VA 00446FB6 .text)  f78464 -> 40f47f
+  off 046441  (VA 00447041 .text)  681a5f -> 80f47f
+  off 04645F  (VA 0044705F .text)  f78464 -> 40f47f
+  off 046476  (VA 00447076 .text)  8b0c85641b5f00 -> e804803b009090
+  off 046496  (VA 00447096 .text)  f78464 -> 40f47f
+
+==============================================================================
+[t16x] T-16 Skyhopper as a selectable craft (.t16 section at VA 00800000, after .conv)  (87 changes)
+==============================================================================
+  off 01BD9E  (VA 0041C99E .text)  9a99993e -> cdcccc3d
+  off 01BDC5  (VA 0041C9C5 .text)  9a99993e -> cdcccc3d
+  off 01C271  (VA 0041CE71 .text)  83c4188b45cc -> e80d333e0090
+  off 01C2DA  (VA 0041CEDA .text)  326a646a31 -> 286a5a6a02
+  off 01C49D  (VA 0041D09D .text)  6c1e00 -> 89303e
+  off 01C50D  (VA 0041D10D .text)  08 -> 28
+  off 01C79B  (VA 0041D39B .text)  8b4df88b91bc00000052e8b67516008b45f88b0851e82b3d...(40 bytes) -> e8806700006a00e8b31a000083c4048b4df88b91bc000000...(40 bytes)
+  off 023324  (VA 00423F24 .text)  83c4188b15fc4d7000 -> e8c1c93d0090909090
+  off 03B2D6  (VA 0043BED6 .text)  ff -> 06
+  off 03C443  (VA 0043D043 .text)  8b45fc8be55dc3 -> e9b82f3c009090
+  off 03C60F  (VA 0043D20F .text)  ff -> 05
+  off 0407DF  (VA 004413DF .text)  a1484270 -> e93bec3b
+  off 040837  (VA 00441437 .text)  f88464 -> 410480
+  off 04092E  (VA 0044152E .text)  681a5f -> 800480
+  off 040C72  (VA 00441872 .text)  30 -> 31
+  off 041052  (VA 00441C52 .text)  bf1300 -> 3ce43b
+  off 041086  (VA 00441C86 .text)  30 -> 31
+  off 041164  (VA 00441D64 .text)  04dd02 -> 56e33b
+  off 041431  (VA 00442031 .text)  2b9a08 -> b5e03b
+  off 04166D  (VA 0044226D .text)  c59808 -> 8dde3b
+  off 041A5D  (VA 0044265D .text)  30 -> 31
+  off 041D77  (VA 00442977 .text)  83bd6cffffff08 -> e8bdd63b009090
+  off 041D8E  (VA 0044298E .text)  581a5f -> 000480
+  off 0421FA  (VA 00442DFA .text)  83bd6cffffff08 -> e83ad23b009090
+  off 04229C  (VA 00442E9C .text)  8b856cffffffc704850c84640000000000 -> e8b3d13b00909090909090909090909090
+  off 04237F  (VA 00442F7F .text)  581a5f -> 000480
+  off 0423DB  (VA 00442FDB .text)  581a5f -> 000480
+  off 042549  (VA 00443149 .text)  681a5f -> 800480
+  off 0425A3  (VA 004431A3 .text)  701a5f -> 900480
+  off 042603  (VA 00443203 .text)  30 -> 31
+  off 042C2A  (VA 0044382A .text)  581a5f -> 000480
+  off 042C50  (VA 00443850 .text)  581a5f -> 000480
+  off 042FE0  (VA 00443BE0 .text)  781a5f -> c00480
+  off 042FFC  (VA 00443BFC .text)  781a5f -> c00480
+  off 043018  (VA 00443C18 .text)  781a5f -> c00480
+  off 04304A  (VA 00443C4A .text)  981a5f -> f00480
+  off 043066  (VA 00443C66 .text)  981a5f -> f00480
+  off 043082  (VA 00443C82 .text)  981a5f -> f00480
+  off 0430C2  (VA 00443CC2 .text)  681a5f -> 800480
+  off 0430F7  (VA 00443CF7 .text)  781a5f -> c00480
+  off 04310E  (VA 00443D0E .text)  781a5f -> c00480
+  off 04312A  (VA 00443D2A .text)  781a5f -> c00480
+  off 043147  (VA 00443D47 .text)  781a5f -> c00480
+  off 0432DD  (VA 00443EDD .text)  781a5f -> c00480
+  off 0432F8  (VA 00443EF8 .text)  781a5f -> c00480
+  off 043315  (VA 00443F15 .text)  781a5f -> c00480
+  off 04334D  (VA 00443F4D .text)  981a5f -> f00480
+  off 043364  (VA 00443F64 .text)  981a5f -> f00480
+  off 043380  (VA 00443F80 .text)  981a5f -> f00480
+  off 04339D  (VA 00443F9D .text)  981a5f -> f00480
+  off 043533  (VA 00444133 .text)  981a5f -> f00480
+  off 04354E  (VA 0044414E .text)  981a5f -> f00480
+  off 04356B  (VA 0044416B .text)  981a5f -> f00480
+  off 043698  (VA 00444298 .text)  681a5f -> 800480
+  off 0436E4  (VA 004442E4 .text)  781a5f -> c00480
+  off 0436FD  (VA 004442FD .text)  981a5f -> f00480
+  off 043744  (VA 00444344 .text)  981a5f -> f00480
+  off 0437D2  (VA 004443D2 .text)  781a5f -> c00480
+  off 043A60  (VA 00444660 .text)  581a5f -> 000480
+  off 043B20  (VA 00444720 .text)  701a5f -> 900480
+  off 043CF0  (VA 004448F0 .text)  33c98a0dd881640083f906750cc785e4feffff00000000eb...(42 bytes) -> 0fb60dd88164000fb689a0048000898de4feffffe9110000...(42 bytes)
+  off 043D31  (VA 00444931 .text)  701a5f -> 900480
+  off 043D53  (VA 00444953 .text)  701a5f -> 900480
+  off 043D99  (VA 00444999 .text)  33c0a0d881640085c0750cc785e0feffff06000000eb1133...(40 bytes) -> 0fb60dd88164000fb689b0048000898de0feffffe90f0000...(40 bytes)
+  off 043DD8  (VA 004449D8 .text)  701a5f -> 900480
+  off 043DFA  (VA 004449FA .text)  701a5f -> 900480
+  off 043E3B  (VA 00444A3B .text)  701a5f -> 900480
+  off 043E87  (VA 00444A87 .text)  701a5f -> 900480
+  off 043FE0  (VA 00444BE0 .text)  6e1a5f -> 860480
+  off 04433B  (VA 00444F3B .text)  581a5f -> 000480
+  off 0443E3  (VA 00444FE3 .text)  581a5f -> 000480
+  off 0448E7  (VA 004454E7 .text)  d80c8db41a5f00 -> e87fab3b009090
+  off 044AA0  (VA 004456A0 .text)  581a5f -> 000480
+  off 045257  (VA 00445E57 .text)  781a5f -> c00480
+  off 045273  (VA 00445E73 .text)  781a5f -> c00480
+  off 045290  (VA 00445E90 .text)  781a5f -> c00480
+  off 0452B7  (VA 00445EB7 .text)  981a5f -> f00480
+  off 0452D3  (VA 00445ED3 .text)  981a5f -> f00480
+  off 0452EF  (VA 00445EEF .text)  981a5f -> f00480
+  off 04538E  (VA 00445F8E .text)  581a5f -> 000480
+  off 0454DE  (VA 004460DE .text)  581a5f -> 000480
+  off 0463A4  (VA 00446FA4 .text)  681a5f -> 800480
+  off 0463B6  (VA 00446FB6 .text)  f78464 -> 400480
+  off 046441  (VA 00447041 .text)  681a5f -> 800480
+  off 04645F  (VA 0044705F .text)  f78464 -> 400480
+  off 046476  (VA 00447076 .text)  8b0c85641b5f00 -> e804903b009090
+  off 046496  (VA 00447096 .text)  f78464 -> 400480
+
+==============================================================================
+[t16 / t16x] new section
+  The installer adds a section header ".t16" (VirtualSize/SizeOfRawData 0x1000, RWX 0xE0000020)
+  after the exe's last section, appends 0x1000 bytes of data at the end of the file, raises
+  NumberOfSections by 1 and SizeOfImage by 0x1000. Its VA is 007FF000 on its own and 00800000
+  when the laser convergence option (which adds a section) is also installed;
+  the [t16] or [t16x] runs above match that VA. Source: src/caves/t16_craft.s + src/build_t16.py.
+  On top of the build_t16.py output, the "je" at section +0x17 (skip levels whose default craft is
+  the snowspeeder) is NOPed, so the T-16 is also offered on mission 7 with that option.
+
+  .t16 data for VA 007FF000 (4096 bytes, trailing zeros omitted):
+        8b45fca80174148b4d0883f913730c833c8d98845f000490900c8089ec5dc357
+        bf40f47f0031c0b931000000f3aa5fa148427000e9ab23c4ff83bd6cffffff09
+        750ac7856cffffff2f00000083bd6cffffff2fc38b856cffffff83f82f740bc7
+        04850c84640000000000c383f92f7507d80db81a5f00c3d80c8db41a5f00c383
+        f82f7506b9601b5f00c38b0c85641b5f00c3ff74240cff74240cff74240ce872
+        3fc4ff83c40c68210600006820f57f006840f57f00e85b3fc4ff83c40cc3ff74
+        2410ff742410ff742410ff742410e89909c7ff83c4106a006a006a006830f57f
+        00e88609c7ff83c410c383bd6cffffff2f7506b860f57f00c3e962c9ccff83bd
+        6cffffff2f751e8b4c2408c70105000000c74104e8f57f00c7410824f67f00b8
+        a0f57f00c3e90ccaccff8b4d08890d50f67f008b1169d22c0100008b82045070
+        00ba0000104166837804037505ba00008041ff357fce4100ff3564554200520f
+        b7411a508d411c508b45f883c00450e888d7c0ff83c4188b4d086689411ae98a
+        fdc1ff5a83c41852568d75d08b4d088b55cce8690500005e8b45ccc325009000
+        00803d648164002f75050d0090000085c0c3f30f1018f30f59dbf30f106004f3
+        0f59e4f30f58dcf30f106008f30f59e4f30f58dcf30f51dbc300000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0004000201030506080000000000000000000000000000000000000000000000
+        0000000000000000000000000000000700000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        02080504060103072f0000000000000000080301050402060700000000000000
+        0102080405060000030000000000000006000108030405060200000000000000
+        cff7533faf94653ffbcb7e3f3b010d3eb5a6993e0d710c3f0e2d323f00000000
+        8fc2753d00000000000000000000000016fb4b3fe6ae653f52491d3a1d5a243e
+        5b42be3e992a083ffe432a3f000000000681953d000000000000000000000000
+        2b743136230000000000000000000000706c5f6372616674732f743136000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        06000000030000006c000000640000003333c7c11f85e34166666ec100000000
+        00008c4200000000cdcc4c3ecdcc4c3ecdcc4c3e000000000000000000000000
+        08000300080000009c00000090000000000000003333e3410000000005000000
+        e8f57f00fae30642000000000000000007000000000000000000000000000000
+        0000c841cdcc4c3e3333c7c10000000066666ec13333c7c10000000066666ec1
+        000020c100000000000060c00ad7233c000000000ad7f3400ad7233c00000000
+        0ad7f340000000000000003f0000803f00000000000000000000000000000000
+        0000803f17b7d1380000c841eacf063e00000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        6683791aff744bf30f10411cf30f104920f30f105124f30f10e8f30f5c6a04f3
+        0f596a10f30f10f1f30f5c7208f30f597214f30f58eef30f10f2f30f5c720cf3
+        0f597218f30f58eef30f5f2d40f67f00eb32f30f102d48f67f00f30f104210f3
+        0f59c5f30f584204f30f104a14f30f59cdf30f584a08f30f105218f30f59d5f3
+        0f58520cf30f592d4cf67f00f30f10721cf30f59f5f30f58c6f30f107220f30f
+        59f5f30f58cef30f107224f30f59f5f30f58d6f30f5c06f30f5c4e04f30f5c56
+        08f30f10d8f30f59d8f30f10e1f30f59e1f30f58dcf30f10e2f30f59e2f30f58
+        dcf30f51db0f2f1d44f67f000f86f7000000f30f102540f67f00f30f5ee3f30f
+        59c4f30f59ccf30f59d48d460ce8a0f9fffff30f10e0f30f59e3f30f11660cf3
+        0f10e1f30f59e3f30f116610f30f10e2f30f59e3f30f1166148d4618e871f9ff
+        fff30f10fbf30f106e18f30f59e8f30f10761cf30f59f1f30f58eef30f107620
+        f30f59f2f30f58eef30f10e0f30f59e5f30f107618f30f5cf4f30f117618f30f
+        10e1f30f59e5f30f10761cf30f5cf4f30f11761cf30f10e2f30f59e5f30f1076
+        20f30f5cf4f30f1176208d4618e800f9ffff0f2f1d44f67f00762ef30f5efbf3
+        0f106618f30f59e7f30f116618f30f10661cf30f59e7f30f11661cf30f106620
+        f30f59e7f30f116620c35883c41850803d21427000077526668b450c663b05fa
+        4d700075198b0d50f67f0085c9740f568d7594ba444d7000e8e3fdffff5e8b15
+        fc4d7000c38a152142700080fa07750230d2c390
+
+  .t16 data for VA 00800000 (4096 bytes, trailing zeros omitted):
+        8b45fca80174148b4d0883f913730c833c8d98845f000490900c8089ec5dc357
+        bf4004800031c0b931000000f3aa5fa148427000e9ab13c4ff83bd6cffffff09
+        750ac7856cffffff2f00000083bd6cffffff2fc38b856cffffff83f82f740bc7
+        04850c84640000000000c383f92f7507d80db81a5f00c3d80c8db41a5f00c383
+        f82f7506b9601b5f00c38b0c85641b5f00c3ff74240cff74240cff74240ce872
+        2fc4ff83c40c682106000068200580006840058000e85b2fc4ff83c40cc3ff74
+        2410ff742410ff742410ff742410e899f9c6ff83c4106a006a006a0068300580
+        00e886f9c6ff83c410c383bd6cffffff2f7506b860058000c3e962b9ccff83bd
+        6cffffff2f751e8b4c2408c70105000000c74104e8058000c7410824068000b8
+        a0058000c3e90cbaccff8b4d08890d500680008b1169d22c0100008b82045070
+        00ba0000104166837804037505ba00008041ff357fce4100ff3564554200520f
+        b7411a508d411c508b45f883c00450e888c7c0ff83c4188b4d086689411ae98a
+        edc1ff5a83c41852568d75d08b4d088b55cce8690500005e8b45ccc325009000
+        00803d648164002f75050d0090000085c0c3f30f1018f30f59dbf30f106004f3
+        0f59e4f30f58dcf30f106008f30f59e4f30f58dcf30f51dbc300000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0004000201030506080000000000000000000000000000000000000000000000
+        0000000000000000000000000000000700000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        02080504060103072f0000000000000000080301050402060700000000000000
+        0102080405060000030000000000000006000108030405060200000000000000
+        cff7533faf94653ffbcb7e3f3b010d3eb5a6993e0d710c3f0e2d323f00000000
+        8fc2753d00000000000000000000000016fb4b3fe6ae653f52491d3a1d5a243e
+        5b42be3e992a083ffe432a3f000000000681953d000000000000000000000000
+        2b743136230000000000000000000000706c5f6372616674732f743136000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        06000000030000006c000000640000003333c7c11f85e34166666ec100000000
+        00008c4200000000cdcc4c3ecdcc4c3ecdcc4c3e000000000000000000000000
+        08000300080000009c00000090000000000000003333e3410000000005000000
+        e8058000fae30642000000000000000007000000000000000000000000000000
+        0000c841cdcc4c3e3333c7c10000000066666ec13333c7c10000000066666ec1
+        000020c100000000000060c00ad7233c000000000ad7f3400ad7233c00000000
+        0ad7f340000000000000003f0000803f00000000000000000000000000000000
+        0000803f17b7d1380000c841eacf063e00000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        6683791aff744bf30f10411cf30f104920f30f105124f30f10e8f30f5c6a04f3
+        0f596a10f30f10f1f30f5c7208f30f597214f30f58eef30f10f2f30f5c720cf3
+        0f597218f30f58eef30f5f2d40068000eb32f30f102d48068000f30f104210f3
+        0f59c5f30f584204f30f104a14f30f59cdf30f584a08f30f105218f30f59d5f3
+        0f58520cf30f592d4c068000f30f10721cf30f59f5f30f58c6f30f107220f30f
+        59f5f30f58cef30f107224f30f59f5f30f58d6f30f5c06f30f5c4e04f30f5c56
+        08f30f10d8f30f59d8f30f10e1f30f59e1f30f58dcf30f10e2f30f59e2f30f58
+        dcf30f51db0f2f1d440680000f86f7000000f30f102540068000f30f5ee3f30f
+        59c4f30f59ccf30f59d48d460ce8a0f9fffff30f10e0f30f59e3f30f11660cf3
+        0f10e1f30f59e3f30f116610f30f10e2f30f59e3f30f1166148d4618e871f9ff
+        fff30f10fbf30f106e18f30f59e8f30f10761cf30f59f1f30f58eef30f107620
+        f30f59f2f30f58eef30f10e0f30f59e5f30f107618f30f5cf4f30f117618f30f
+        10e1f30f59e5f30f10761cf30f5cf4f30f11761cf30f10e2f30f59e5f30f1076
+        20f30f5cf4f30f1176208d4618e800f9ffff0f2f1d44068000762ef30f5efbf3
+        0f106618f30f59e7f30f116618f30f10661cf30f59e7f30f11661cf30f106620
+        f30f59e7f30f116620c35883c41850803d21427000077526668b450c663b05fa
+        4d700075198b0d5006800085c9740f568d7594ba444d7000e8e3fdffff5e8b15
+        fc4d7000c38a152142700080fa07750230d2c390
+
+==============================================================================
+[resolution] menu entry 1280x1024 (table at VA 603520, entry 8) replaced
+  off 201D80  (VA 00603580 .data)  width dword 0x500, off 201D84 height dword 0x400
+  The installer writes the chosen 16:9 size here (default 1920x1080 = 80 07 00 00 / 38 04 00 00).
+
