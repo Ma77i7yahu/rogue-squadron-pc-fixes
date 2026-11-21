@@ -30,6 +30,8 @@ The installer only accepts the unmodified v1.2 exe (2,492,928 bytes, MD5 `2D5EE8
 | Any craft on Imperial Construction Yards (mission 7) | Off | Tested (T-16 there not yet flown) |
 | Every craft repairs itself | Off | Repair tested; 25% cut-off not yet flown |
 | Single solid orange crosshair | On | Tested |
+| Bigger, centred HUD numbers | On | Tested at 1920 x 1080 |
+| One life (hard mode) | Off | Tested (hidden lives number not yet flown) |
 
 Laser auto-convergence uses the game's own targeting, so it replaces "Remove aim assist" (the installer won't let you tick both). Rogue Leader style flight shares convergence's code section, so it switches convergence on with it; you can still turn convergence off in the game. Everything else can be combined freely. Laser auto-convergence and the T-16 each add their own code section to the exe.
 
@@ -132,6 +134,12 @@ In the stock game the X-wing, Y-wing and Naboo starfighter lose their droid when
 The crosshair is two green rings: a big one drawn close to the craft and a small one further out. The lasers meet the small one; the big one sits well below it from the chase camera and only confuses where the shots go. The pale, half see-through green is also hard to see against the terrain.
 
 This removes the big ring, in normal flight and in the torpedo targeting view, so the crosshair is the small ring only. It's drawn in orange at twice the stock opacity (200/255 instead of 100/255), matching the Battle for Naboo mod. The big ring's position and fade are still worked out, because the torpedo view's small ring takes its fade from it; it just isn't drawn. Aiming is unchanged, and missile and torpedo lock markers keep their colours. 13 bytes (`src/build_gunsight.py`).
+
+### Bigger, centred HUD numbers
+The torpedo/missile count in the bottom-left corner is small and sits off-centre in its triangle, and the lives number in the top-left sits off to the side of the craft icon. This draws both numbers 1.5 times bigger, centres the ammo count in its triangle and centres the lives number over the craft icon. 5 small edits to the HUD layout code (sizes and positions only).
+
+### One life (hard mode)
+Every mission normally starts with three lives. With this option you get one, so being shot down fails the mission and you restart it from the beginning. The lives number in the top-left would always read 1, so it's hidden; the craft icon and the torpedo count stay. The infinite-lives cheat code still works, because it adds its life before the check. 2 edits: the starting lives (3 to 1) and the HUD entry that draws the lives number.
 
 ## Not included
 - **DxWrapper, dinput.dll camera fix, rsLauncher, wingman.dll:** these are third-party files some setups use. They're not part of these mods and the installer doesn't touch them.

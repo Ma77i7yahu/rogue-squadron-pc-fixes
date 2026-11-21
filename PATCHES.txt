@@ -855,3 +855,25 @@ Every 'old' value below has been checked against the original exe.
   off 1BEC98  (VA 005BF898 .rdata)  0000c842 -> 00004843
         ; crosshair opacity scale 100.0 -> 200.0 (only used by the colour function's two fading paths)
 
+==============================================================================
+[hudnumbers] Bigger, centred HUD numbers (5 bytes)
+==============================================================================
+  HUD setup calls place(hud, slot, sprite, text, x, y, scale, flag) = 0x47BBAA; 640x480 virtual space, centre 0,0, y down.
+  off 079E85  (VA 0047AA85)  80 -> c0
+        ; slot 1 (lives number): push float scale 1.0 (0000803f) -> 1.5 (0000c03f)
+  off 079E8D  (VA 0047AA8D)  00 -> 02
+        ; slot 1: push x -256 (00ffffff) -> -254 (02ffffff)
+  off 079ECE  (VA 0047AACE)  80 -> c0
+        ; slot 4 (torpedo/missile ammo number): scale 1.0 -> 1.5
+  off 079EDA  (VA 0047AADA)  a2 -> a7
+        ; slot 4: mov ecx, y 162 -> 167
+  off 079EE2  (VA 0047AAE2)  02 -> 0c
+        ; slot 4: push x -254 (02ffffff) -> -244 (0cffffff)
+
+==============================================================================
+[onelife] One life (hard mode) (3 bytes)
+==============================================================================
+  off 03A2B1  (VA 0043AEB1)  03 -> 01
+        ; lives init fn 0x43AE82: mov byte [0x704940 + player], 3 -> 1 (run at mission start / restart)
+  off 07AF72  (VA 0047BB72)  b8b44700 -> 60b54700
+        ; HUD slot draw switch 0x47B4B1, jump table 0x47BB6E entry 1 (lives number): 0x47B4B8 -> 0x47B560 (slot 0's never-draw case)

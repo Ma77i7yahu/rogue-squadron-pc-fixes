@@ -22,7 +22,7 @@ class T {
     Type tc, tg;
     var fc = Load(a[0], a[1], out tc);
     var fg = Load(a[2], a[3], out tg);
-    string[] keys = { "deadzone", "aimassist", "convergence", "rlflight", "lasers", "linear", "smallmoves", "ceiling", "widescreen", "t16", "mission7", "repair" };
+    string[] keys = { "deadzone", "aimassist", "convergence", "rlflight", "lasers", "linear", "smallmoves", "ceiling", "widescreen", "t16", "mission7", "repair", "gunsight", "hudnumbers", "onelife" };
     var rnd = new Random(1);
     int bad = 0, n = 0;
     for (int c = 0; c < 200; c++) {

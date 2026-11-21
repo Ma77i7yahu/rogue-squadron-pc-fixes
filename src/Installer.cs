@@ -218,6 +218,16 @@ class InstallerForm : Form {
             "draws it in solid orange at twice the stock opacity, matching the Battle for Naboo mod. Aiming is " +
             "unchanged. Missile and torpedo lock markers keep their colours.\r\n\r\n" +
             "Status: tested.");
+        Check(g4, "hudnumbers", "Bigger, centred HUD numbers",
+            "The torpedo/missile count in the bottom-left is small and sits off-centre in its triangle, and the " +
+            "lives number in the top-left sits off to the side of the craft icon.\r\n\r\n" +
+            "Draws both numbers 1.5 times bigger, with the ammo count centred in its triangle and the lives number " +
+            "centred over the craft icon.\r\n\r\nStatus: tested at 1920x1080 with the widescreen option.");
+        Check(g4, "onelife", "One life (hard mode)",
+            "You start every mission with one life instead of three, so being shot down fails the mission and you " +
+            "restart it from the beginning. The lives number in the top-left (which would always read 1) is hidden; " +
+            "the craft icon and torpedo count stay. The infinite-lives cheat code still works.\r\n\r\n" +
+            "Status: one life tested; the hidden lives number is new, not yet flown.");
 
         // info box
         info.Multiline = true; info.ReadOnly = true; info.ScrollBars = ScrollBars.Vertical;
@@ -381,8 +391,9 @@ class InstallerForm : Form {
 
         // reflect what is installed now (defaults for a clean exe)
         bool clean = ReferenceEquals(baseExe, cur);
-        foreach (var k in new[] { "deadzone", "aimassist", "linear", "smallmoves", "widescreen", "ceiling", "gunsight" })
+        foreach (var k in new[] { "deadzone", "aimassist", "linear", "smallmoves", "widescreen", "ceiling", "gunsight", "hudnumbers" })
             Set(k, clean || PatchFor(k).IsIn(cur));
+        Set("onelife", !clean && PatchFor("onelife").IsIn(cur));
         Set("convergence", !clean && PatchFor("convergence").IsIn(cur));
         int button = 9;
         Set("rlflight", !clean && RlIsIn(cur, out button));
@@ -401,7 +412,7 @@ class InstallerForm : Form {
     byte[] Build(List<string> applied) {
         var keys = new List<string>();
         // convergence before rlflight: RL flight's code goes into the section convergence adds
-        foreach (var k in new[] { "deadzone", "aimassist", "linear", "widescreen", "ceiling", "smallmoves", "convergence", "rlflight", "lasers", "mission7", "repair", "gunsight" })
+        foreach (var k in new[] { "deadzone", "aimassist", "linear", "widescreen", "ceiling", "smallmoves", "convergence", "rlflight", "lasers", "mission7", "repair", "gunsight", "hudnumbers", "onelife" })
             if (On(k)) keys.Add(k);
         if (keys.Contains("rlflight") && !keys.Contains("convergence")) throw new InvalidOperationException("Rogue Leader flight needs laser convergence.");
         if (keys.Contains("convergence")) keys.Remove("aimassist");

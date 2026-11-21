@@ -314,6 +314,18 @@ static class PatchData {
             new Run(0x022EFF, new byte[]{0x64}, new byte[]{0xC8}),
             new Run(0x1BEC9A, new byte[]{0xC8,0x42}, new byte[]{0x48,0x43}),
         }),
+        // HUD setup 0x47A9xx, place(hud, slot, sprite, text, x, y, scale, flag) = 0x47BBAA
+        new Patch("hudnumbers", new Run[]{
+            new Run(0x079E83, new byte[]{0x00,0x00,0x80,0x3F}, new byte[]{0x00,0x00,0xC0,0x3F}),   // lives number scale 1.0 -> 1.5
+            new Run(0x079E8C, new byte[]{0x68,0x00,0xFF}, new byte[]{0x68,0x02,0xFF}),             // its x -256 -> -254
+            new Run(0x079ECC, new byte[]{0x00,0x00,0x80,0x3F}, new byte[]{0x00,0x00,0xC0,0x3F}),   // torpedo ammo number scale 1.0 -> 1.5
+            new Run(0x079ED9, new byte[]{0xB9,0xA2,0x00}, new byte[]{0xB9,0xA7,0x00}),             // its y 162 -> 167
+            new Run(0x079EE1, new byte[]{0x68,0x02,0xFF}, new byte[]{0x68,0x0C,0xFF}),             // its x -254 -> -244
+        }),
+        new Patch("onelife", new Run[]{
+            new Run(0x03A2AF, new byte[]{0x70,0x00,0x03,0xEB}, new byte[]{0x70,0x00,0x01,0xEB}),   // lives at mission start 3 -> 1
+            new Run(0x07AF72, new byte[]{0xB8,0xB4,0x47,0x00}, new byte[]{0x60,0xB5,0x47,0x00}),   // HUD slot 1 (lives digit) -> never-draw case
+        }),
     };
     // T-16 section data, keyed by the section's RVA (0x3FF000 = VA 007FF000, 0x400000 = VA 00800000)
     public const int T16SectionSize = 0x1000;
