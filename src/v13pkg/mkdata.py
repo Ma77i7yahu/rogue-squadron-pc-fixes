@@ -17,7 +17,7 @@ G['kessel']=[R(0x3B278,15,c='ammo fn 0x43BE72: weapon 1 (ion cannon) -> 0xFF (un
 G['anycraft']=[R(0x3C2CB,21,c='hangar mask prologue: X-wing bit added when the level default craft is the airspeeder'),
   R(0x3C414,1,c='speeder-only level list (3,6,0xB,0x12) cmps -> -1'),R(0x3C41A,1),R(0x3C420,1),R(0x3C426,1),
   R(0x3C44D,21,c='menu mask prologue, same'),R(0x3C525,1),R(0x3C52B,1),R(0x3C531,1),R(0x3C537,1)]
-G['nonah']=[R(0xA86C1,25,c='Shuttle HP callback 0x4A92BF: HP >= 65536 (lifters, 1,000,000) -> 10000')]
+G['nonah']=[R(0xA86C1,25,c='Shuttle HP callback 0x4A92BF: HP >= 65536 (lifters, 1,000,000) -> 8000 (1.3: 10000)')]
 G['bios']=[R(0x3C6EE,2,c='bio page count 0x43D2E0: jl NOPped, Kasan Moor page always reachable')]
 G['failselect']=[R(0x6C5A8,7,c='game-over block 0x46D1A8: call 0x43AE82 (reset lives, game stays in progress)'),
   R(0x6C5D7,1,c='0x704962 high-score flag 1 -> 0: back to mission select')]

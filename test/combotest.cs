@@ -28,7 +28,7 @@ class T {
     Directory.CreateDirectory(scratch);
     File.WriteAllBytes(Path.Combine(scratch, "Rogue Squadron.original.EXE"), orig);
     string[] keys = { "deadzone", "aimassist", "convergence", "rlflight", "lasers", "linear", "smallmoves", "ceiling", "widescreen",
-                      "t16", "anycraft", "kessel", "nonah", "bios", "failselect", "repair", "gunsight", "hudnumbers", "onelife" };
+                      "t16", "anycraft", "kessel", "nonah", "bios", "failselect", "repair", "gunsight", "hudnumbers", "onelife", "falconaim" };
     var rnd = new Random(7);
     int bad = 0, n = 0;
     for (int c = 0; c < count; c++) {

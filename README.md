@@ -10,9 +10,9 @@ Get the latest version from the [**Releases**](https://github.com/Ma77i7yahu/rog
 
 | Your copy | Download | Instructions |
 |---|---|---|
-| CD, with the official v1.2 update | `RogueSquadronMods-CD-v1.3.zip` | [README-CD](docs/README-CD.md) |
-| Steam | `RogueSquadronMods-Steam-v1.3.zip` | [README-Steam](docs/README-Steam.md) (unwrap the exe with Steamless first) |
-| GOG | `RogueSquadronMods-GOG-v1.3.zip` | [README-GOG](docs/README-GOG.md) (read the joystick note before creating a pilot) |
+| CD, with the official v1.2 update | `RogueSquadronMods-CD-v1.4.zip` | [README-CD](docs/README-CD.md) |
+| Steam | `RogueSquadronMods-Steam-v1.4.zip` | [README-Steam](docs/README-Steam.md) (unwrap the exe with Steamless first) |
+| GOG | `RogueSquadronMods-GOG-v1.4.zip` | [README-GOG](docs/README-GOG.md) (read the joystick note before creating a pilot) |
 
 Each zip holds the installer, its README and `PATCHES.txt`. The installer checks your exe's MD5 and won't touch a version it doesn't recognise. `SHA256SUMS.txt` on the release page lets you check your download.
 
@@ -22,6 +22,7 @@ Each zip holds the installer, its README and `PATCHES.txt`. The installer checks
 |---|---|---|
 | Remove per-craft stick deadzones | On | Tested |
 | Remove aim assist (all craft except the Falcon) | On | Tested |
+| Remove aim assist for the Millennium Falcon | Off | Tested |
 | Laser auto-convergence (replaces aim assist) | Off | Tested |
 | Rogue Leader style flight + tight-turn button | Off | Tested |
 | Faster lasers | Off | Tested |
@@ -32,7 +33,7 @@ Each zip holds the installer, its README and `PATCHES.txt`. The installer checks
 | T-16 Skyhopper as a selectable craft | Off | Tested in full missions (1.3 changes tested) |
 | Any craft on the airspeeder missions | Off | Tested on mission 7 and one other |
 | Any craft on Rescue on Kessel, all with the ion cannon | Off | Tested |
-| Killable Imperial landing craft (The Search for the Nonah) | Off | Tested at 2,000 and 20,000 health; final 10,000 not yet flown |
+| Killable Imperial landing craft (The Search for the Nonah) | Off | Tested at 2,000, 10,000 and 20,000 health; final 8,000 not yet flown |
 | Kasan Moor's biography always reachable | On | Tested |
 | Game over returns to mission select | Off | Tested |
 | Every craft repairs itself | Off | Repair tested; 25% cut-off not yet flown |

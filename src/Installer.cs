@@ -118,13 +118,20 @@ class InstallerForm : Form {
             "Most craft bend their lasers toward any enemy inside a small cone around the nose: A-wing 15 deg, " +
             "Y-wing ion turret 15 deg, X-wing / TIE Interceptor / Naboo starfighter 7.3 deg, V-wing / airspeeder 9.2 deg.\r\n\r\n" +
             "This sets each cone so nothing can ever match, so shots go where the crosshair points. The Falcon's " +
-            "turrets (27 deg) are designed to track and are left alone. The T-16 Skyhopper option below uses the " +
+            "turrets (27 deg) have their own option below. The T-16 Skyhopper option uses the " +
             "X-wing's cone, so it follows this setting.\r\n\r\nStatus: tested.");
+        Check(g1, "falconaim", "Remove aim assist for the Millennium Falcon",
+            "The Falcon's two laser turrets each lock onto any enemy inside a wide 27 deg cone around the nose and " +
+            "swing toward it, so most shots hit without precise aiming.\r\n\r\n" +
+            "This sets the turrets' cone so nothing can ever match, so the turrets stay pointing straight ahead (as they " +
+            "do in the stock game when no enemy is in the cone) and shots go where the crosshair points. Separate from " +
+            "\"Remove aim assist\" above, and works with or without laser auto-convergence (which never touched the " +
+            "Falcon).\r\n\r\nStatus: tested.");
         Check(g1, "convergence", "Laser auto-convergence (X-Wing style, replaces aim assist)",
             "Like X-Wing's auto convergence (NOT aim assist): when the game's own targeting picks up an enemy in your " +
             "crosshairs, your lasers converge at its range on the line straight ahead of your nose, instead of bending " +
             "toward the target. They hit what the crosshair is on, and close-range shots no longer spread wide. All " +
-            "player craft except the Millennium Falcon, whose turrets keep their tracking.\r\n\r\n" +
+            "player craft except the Millennium Falcon, whose turrets keep their tracking (see the Falcon option above).\r\n\r\n" +
             "Adds \"Enable Laser Convergence\" to Options > General Settings in the game (on by default). Switched off " +
             "there, shots fly straight with no aim assist at all. This edits the game's Bundle.002 file, which is backed " +
             "up as \"Bundle.002.original\" first.\r\n\r\n" +
@@ -220,9 +227,9 @@ class InstallerForm : Form {
         Check(g4, "nonah", "Killable Imperial landing craft (The Search for the Nonah)",
             "The three Imperial landing craft in The Search for the Nonah have 1,000,000 health, so they can't be " +
             "shot down.\r\n\r\n" +
-            "Lowers that to 10,000 (the Rebel shuttles have 2,000), so a sustained attack brings one down. Only " +
+            "Lowers that to 8,000 (the Rebel shuttles have 2,000), so a sustained attack brings one down. Only " +
             "craft with that huge health value are changed.\r\n\r\n" +
-            "Status: tested at 2,000 (too weak) and 20,000 health; the final 10,000 is not yet flown.");
+            "Status: tested at 2,000 (too weak), 10,000 and 20,000 health; the final 8,000 is not yet flown.");
         Check(g4, "bios", "Kasan Moor's biography always reachable",
             "Kasan Moor's page in Options > Biographies is only reachable once the game thinks you've got far " +
             "enough, and on some finished pilots the arrow from Wes Janson's page to hers never appears.\r\n\r\n" +
@@ -433,8 +440,14 @@ class InstallerForm : Form {
         // the 1.2 "mission7" option is a subset of "anycraft" (same bytes), so it reads as anycraft
         Set("anycraft", !clean && (PatchFor("anycraft").IsIn(cur) || PatchFor("mission7").IsIn(cur)));
         Set("repair", !clean && PatchFor("repair").IsIn(cur));
-        foreach (var k in new[] { "kessel", "nonah", "failselect" })
+        foreach (var k in new[] { "kessel", "nonah", "failselect", "falconaim" })
             Set(k, !clean && PatchFor(k).IsIn(cur));
+        // version 1.3 gave the Nonah landing craft 10,000 health (now 8,000): still reads as this option
+        if (!clean && !On("nonah")) {
+            var r = PatchFor("nonah").Runs[0];
+            var old13 = (byte[])r.New.Clone(); old13[10] = 0x10; old13[11] = 0x27;
+            Set("nonah", new Patch("nonah", new[] { new Run(r.Offset, r.Old, old13) }).IsIn(cur));
+        }
         if (!clean && PatchFor("widescreen").IsIn(cur)) {
             int w = BitConverter.ToInt32(cur, PatchData.ResolutionOffset), h = BitConverter.ToInt32(cur, PatchData.ResolutionOffset + 4);
             for (int i = 0; i < Resolutions.Length; i++) if (Resolutions[i][0] == w && Resolutions[i][1] == h) res.SelectedIndex = i;
@@ -445,7 +458,7 @@ class InstallerForm : Form {
     byte[] Build(List<string> applied) {
         var keys = new List<string>();
         // convergence before rlflight: RL flight's code goes into the section convergence adds
-        foreach (var k in new[] { "deadzone", "aimassist", "linear", "widescreen", "ceiling", "smallmoves", "convergence", "rlflight", "lasers", "anycraft", "kessel", "nonah", "bios", "repair", "gunsight", "hudnumbers", "onelife", "failselect" })
+        foreach (var k in new[] { "deadzone", "aimassist", "falconaim", "linear", "widescreen", "ceiling", "smallmoves", "convergence", "rlflight", "lasers", "anycraft", "kessel", "nonah", "bios", "repair", "gunsight", "hudnumbers", "onelife", "failselect" })
             if (On(k)) keys.Add(k);
         if (keys.Contains("rlflight") && !keys.Contains("convergence")) throw new InvalidOperationException("Rogue Leader flight needs laser convergence.");
         if (keys.Contains("convergence")) keys.Remove("aimassist");

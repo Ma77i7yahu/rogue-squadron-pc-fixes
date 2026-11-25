@@ -35,6 +35,7 @@ Repeat this after each run of the mod installer (start the game once, quit, unti
 |---|---|---|
 | Remove per-craft stick deadzones | On | Tested |
 | Remove aim assist (all craft except the Falcon) | On | Tested |
+| Remove aim assist for the Millennium Falcon | Off | Tested |
 | Laser auto-convergence (replaces aim assist) | Off | Tested |
 | Rogue Leader style flight + tight-turn button | Off | Tested |
 | Faster lasers | Off | Tested |
@@ -45,7 +46,7 @@ Repeat this after each run of the mod installer (start the game once, quit, unti
 | T-16 Skyhopper as a selectable craft | Off | Tested in full missions (1.3 changes tested) |
 | Any craft on the airspeeder missions | Off | Tested on mission 7 and one other |
 | Any craft on Rescue on Kessel, all with the ion cannon | Off | Tested |
-| Killable Imperial landing craft (The Search for the Nonah) | Off | Tested at 2,000 and 20,000 health; final 10,000 not yet flown |
+| Killable Imperial landing craft (The Search for the Nonah) | Off | Tested at 2,000, 10,000 and 20,000 health; final 8,000 not yet flown |
 | Kasan Moor's biography always reachable | On | Tested |
 | Game over returns to mission select | Off | Tested |
 | Every craft repairs itself | Off | Repair tested; 25% cut-off not yet flown |
@@ -87,7 +88,10 @@ Most craft bend their shots toward any enemy inside a cone around the nose. On t
 | X-wing, TIE Interceptor, Naboo starfighter | 7.3° |
 | V-wing, airspeeder | 9.2° |
 
-The mod sets each cone's cosine to 2.0, which no angle can match, so shots always go where the crosshair points. The Millennium Falcon (27°) has turrets that are meant to track, so it's left alone. The T-16 Skyhopper option uses the X-wing's cone, so it follows this setting.
+The mod sets each cone's cosine to 2.0, which no angle can match, so shots always go where the crosshair points. The Millennium Falcon (27°) has its own option, below. The T-16 Skyhopper option uses the X-wing's cone, so it follows this setting.
+
+### Remove aim assist for the Millennium Falcon
+The Falcon's two laser turrets each lock onto any enemy inside a 27° cone around the nose and swing toward it. The mod sets that cone's cosine to 2.0 as well, so the turrets stay pointing straight ahead, as they do in the stock game when no enemy is in the cone, and shots go where the crosshair points. It's separate from "Remove aim assist" and works with or without laser auto-convergence, which never changed the Falcon.
 
 ### Laser auto-convergence (replaces aim assist)
 This works like X-Wing's auto convergence and is **not** aim assist. The game's own targeting still picks the enemy in your crosshairs, but instead of bending your shots toward it, the mod moves the aim point onto the line straight ahead of your nose, at the target's range. Each craft also turned its bolts only part of the way toward the aim point (40–80%), so that's set to the full turn. The result: your lasers converge where the crosshair is, at the right range, so close-range shots no longer spread wide. All player craft except the Millennium Falcon, whose turrets keep tracking.
@@ -153,7 +157,7 @@ A level's craft list starts from its default craft, and the X-wing, A-wing and V
 Rescue on Kessel only lets you fly the Y-wing, because you need its ion cannon to stop the prison trains. This option lets you pick any craft you've unlocked there; the Y-wing stays available and is still the hangar default. On this mission every craft gets the ion cannon as its secondary weapon (in place of torpedoes or missiles), with unlimited shots like the Y-wing, and the HUD hides the ammo number for it as it does for the Y-wing. With the T-16 option, the T-16's ion shots are aimed at its crosshair like its lasers.
 
 ### Killable Imperial landing craft (The Search for the Nonah)
-The three Imperial landing craft in The Search for the Nonah aren't marked invulnerable; they just start with 1,000,000 health (the Rebel shuttles have 2,000, an AT-ST 400), so nothing you have can bring one down. This option lowers that to 10,000 when the shuttle's health is set up. Only shuttles with a health of 65,536 or more are changed, so the Rebel shuttles keep theirs. A kill may not add to your score, because the game gave these craft no score value. 2,000 was tested and felt too weak, 20,000 was tested, and 10,000 is the value our tester asked for, not yet flown.
+The three Imperial landing craft in The Search for the Nonah aren't marked invulnerable; they just start with 1,000,000 health (the Rebel shuttles have 2,000, an AT-ST 400), so nothing you have can bring one down. This option lowers that to 8,000 when the shuttle's health is set up. Only shuttles with a health of 65,536 or more are changed, so the Rebel shuttles keep theirs. A kill may not add to your score, because the game gave these craft no score value. 2,000 was tested and felt too weak, 10,000 and 20,000 were tested, and 8,000 is the value our tester asked for, not yet flown.
 
 ### Kasan Moor's biography always reachable
 Options → Biographies has six pages: Wedge, Dack, Hobbie, Zev, Wes Janson and Kasan Moor. The arrow from Janson's page to Kasan's only appears once the game thinks you've got far enough, and on some pilots who have finished the game it never appears. This removes that check, so all six pages can always be read. One 2-byte change.
