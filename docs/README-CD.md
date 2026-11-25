@@ -26,8 +26,12 @@ The installer only accepts the unmodified v1.2 exe (2,492,928 bytes, MD5 `2D5EE8
 | Small stick movement fix | On | Tested |
 | Higher airspeeder ceiling | On | Tested |
 | 16:9 widescreen (Hor+) | On | Tested at 1920 x 1080 |
-| T-16 Skyhopper as a selectable craft | Off | Tested in full missions |
-| Any craft on Imperial Construction Yards (mission 7) | Off | Tested (T-16 there not yet flown) |
+| T-16 Skyhopper as a selectable craft | Off | Tested in full missions (1.3 changes tested) |
+| Any craft on the airspeeder missions | Off | Tested on mission 7 and one other |
+| Any craft on Rescue on Kessel, all with the ion cannon | Off | Tested |
+| Killable Imperial landing craft (The Search for the Nonah) | Off | Tested at 2,000 and 20,000 health; final 10,000 not yet flown |
+| Kasan Moor's biography always reachable | On | Tested |
+| Game over returns to mission select | Off | Tested |
 | Every craft repairs itself | Off | Repair tested; 25% cut-off not yet flown |
 | Single solid orange crosshair | On | Tested |
 | Bigger, centred HUD numbers | On | Tested at 1920 x 1080 |
@@ -110,20 +114,36 @@ Known limits:
 - Every menu resolution uses 16:9, so pick the widescreen one.
 
 ### T-16 Skyhopper as a selectable craft
-The T-16 from Beggar's Canyon is complete in the game (model, cockpit, flight code), but you can only fly it in that bonus level. This option makes it selectable on every mission that allows the X-wing, except the airspeeder-only missions. With the mission 7 option it's offered on Imperial Construction Yards too.
+The T-16 from Beggar's Canyon is complete in the game (model, cockpit, flight code), but you can only fly it in that bonus level. This option makes it selectable on every mission that allows the X-wing. With the airspeeder missions option it's offered on those too.
 
 - **Hangar:** it gets its own bay between the V-wing and the Y-wing, with its own launch. The airspeeder keeps its bay.
 - **Lasers:** the X-wing's laser sound and fire rate (10 shots/s; the T-16's own was 3.3/s), and the X-wing's target lock.
 - **Torpedoes:** 6 proton torpedoes like the X-wing (the game gave it no secondary weapon).
-- **Aim:** the T-16 model is far larger than the others, so its crosshair sits below its line of fire. Its lasers and dumbfire torpedoes are aimed 7.5° below the nose line so they land on the crosshair.
+- **Size:** the T-16 model is about three times the size of the other craft, and the game's camera and crosshair weren't made for that. In 1.3:
+  - **Camera:** the chase camera is the X-wing's, three times further back and higher, so the T-16 sits in the frame like the X-wing does.
+  - **Crosshair:** placed three times further out along the line of fire (it used X-wing distances, so it sat on the T-16's nose). Lasers and dumbfire torpedoes are aimed about 1.4° above the nose line so they land in it.
+  - **Hit box:** the game tested hits against one box around the whole craft, so enemy shots that passed through the empty air beside the fin or over the wings still hit. It's now 13 boxes: the body, 4 stepped boxes up the fin and 4 along each wing.
+- **Turning:** the X-wing's turn and roll rates (the T-16's own were sharper than the X-wing's).
 - **Game bug fixes:** two bugs in the original T-16 code only show up outside Beggar's Canyon. It freed its control block before the weapon cleanup that still uses it, and that block was too small for the targeting data.
 
-It adds a new code section, `.t16`, after the exe's last section, so it works with or without the other options. It has been flown in full missions (hangar launch, combat, end cutscene) with our tester's own set of flight mods. With the installer's option sets it is byte-checked but not yet flown.
+It adds a new code section, `.t16`, after the exe's last section, so it works with or without the other options. It has been flown in full missions (hangar launch, combat, end cutscene) with our tester's own set of mods, including the 1.3 changes.
 
-### Any craft on Imperial Construction Yards (mission 7)
-The game makes four levels airspeeder-only because they have AT-ATs: Defection at Corellia, Imperial Construction Yards, Escape from Fest and the Battle of Hoth. In Imperial Construction Yards you don't have to bring down an AT-AT to win, so this option lifts the restriction there only.
+### Any craft on the airspeeder missions
+The game makes four levels airspeeder-only because they have AT-ATs: Defection at Corellia, Imperial Construction Yards, Escape from Fest and the Battle of Hoth. This option lifts the restriction on all four. (It replaces 1.2's mission 7 only option, which used the same code; if you had that installed, the installer shows this one ticked.)
 
-A level's craft list starts from its default craft, and the X-wing, A-wing and V-wing unlocks only apply when that default is one of those three. Mission 7's default is the airspeeder, so taking it off the speeder-only list would still leave only the airspeeder. The patch therefore rewrites the start of both craft-list functions (the hangar's and the one the menus use) so that mission 7 also gets the X-wing. Your normal unlocks then apply on top: A-wing, V-wing, Millennium Falcon and TIE Interceptor, plus the T-16 if that option is installed. The airspeeder stays the hangar default. AT-ATs can still only be brought down with the airspeeder's tow cable.
+A level's craft list starts from its default craft, and the X-wing, A-wing and V-wing unlocks only apply when that default is one of those three. These levels' default is the airspeeder, so taking them off the speeder-only list would still leave only the airspeeder. The patch therefore rewrites the start of both craft-list functions (the hangar's and the one the menus use) so that any level whose default is the airspeeder also gets the X-wing. Your normal unlocks then apply on top: A-wing, V-wing, Millennium Falcon and TIE Interceptor, plus the T-16 if that option is installed. The airspeeder stays the hangar default. AT-ATs can still only be brought down with the airspeeder's tow cable, so where a mission needs that, take the airspeeder.
+
+### Any craft on Rescue on Kessel, all with the ion cannon
+Rescue on Kessel only lets you fly the Y-wing, because you need its ion cannon to stop the prison trains. This option lets you pick any craft you've unlocked there; the Y-wing stays available and is still the hangar default. On this mission every craft gets the ion cannon as its secondary weapon (in place of torpedoes or missiles), with unlimited shots like the Y-wing, and the HUD hides the ammo number for it as it does for the Y-wing. With the T-16 option, the T-16's ion shots are aimed at its crosshair like its lasers.
+
+### Killable Imperial landing craft (The Search for the Nonah)
+The three Imperial landing craft in The Search for the Nonah aren't marked invulnerable; they just start with 1,000,000 health (the Rebel shuttles have 2,000, an AT-ST 400), so nothing you have can bring one down. This option lowers that to 10,000 when the shuttle's health is set up. Only shuttles with a health of 65,536 or more are changed, so the Rebel shuttles keep theirs. A kill may not add to your score, because the game gave these craft no score value. 2,000 was tested and felt too weak, 20,000 was tested, and 10,000 is the value our tester asked for, not yet flown.
+
+### Kasan Moor's biography always reachable
+Options → Biographies has six pages: Wedge, Dack, Hobbie, Zev, Wes Janson and Kasan Moor. The arrow from Janson's page to Kasan's only appears once the game thinks you've got far enough, and on some pilots who have finished the game it never appears. This removes that check, so all six pages can always be read. One 2-byte change.
+
+### Game over returns to mission select
+When you lose your last life, the game shows the end-of-mission screen and the high scores, then drops you back to the main menu, so you have to load your pilot again to retry. With this option the end-of-mission screen still plays, but you go straight back to the mission select screen with your lives reset, the same as after losing a life. Handy with the one life option. 2 edits in the game-over branch.
 
 ### Every craft repairs itself
 In the stock game, the craft with an astromech droid or a crew slowly repair damage, at 1/180 of full health per second (full repair in 3 minutes). These are the X-wing, Y-wing, Naboo starfighter and Millennium Falcon. The A-wing, V-wing, airspeeder, TIE Interceptor and T-16 don't repair at all. This mod rewrites the repair function in place (same size, `src/caves/repair_all.s`) so every craft repairs at that rate.

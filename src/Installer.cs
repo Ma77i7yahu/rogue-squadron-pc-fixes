@@ -186,23 +186,52 @@ class InstallerForm : Form {
 
         var g4 = Group(root, "Miscellaneous improvements");
         Check(g4, "t16", "T-16 Skyhopper as a selectable craft",
-            "The T-16 from Beggar's Canyon becomes selectable on every mission that allows the X-wing (not the " +
-            "airspeeder-only missions; with the mission 7 option below it's offered there too). It gets its own bay in the hangar, between the V-wing and the Y-wing, with its " +
+            "The T-16 from Beggar's Canyon becomes selectable on every mission that allows the X-wing (and on the " +
+            "airspeeder missions with the option below). It gets its own bay in the hangar, between the V-wing and the Y-wing, with its " +
             "own launch.\r\n\r\n" +
-            "In flight: X-wing laser sound and fire rate (10 shots/s), 6 proton torpedoes like the X-wing, and the " +
-            "X-wing's target lock. Its lasers and dumbfire torpedoes are aimed 7.5 deg below the nose line so they land " +
-            "on the crosshair (the T-16 model is much bigger than the others, so its crosshair sits low).\r\n\r\n" +
+            "In flight: X-wing laser sound and fire rate (10 shots/s), 6 proton torpedoes like the X-wing, the " +
+            "X-wing's target lock and the X-wing's turn rates. The T-16 model is about three times the size of the " +
+            "others, so its chase camera sits three times further back (like the X-wing's view, scaled up), the " +
+            "crosshair is placed three times further out so shots land in it, and its hit box is made of 13 boxes " +
+            "around the body, fin and wings instead of one big box (enemy shots no longer hit the empty air " +
+            "around the fin and wings).\r\n\r\n" +
             "Also fixes two bugs in the game's own T-16 code that only show up outside Beggar's Canyon " +
             "(memory freed in the wrong order, and a control block too small for the targeting data).\r\n\r\n" +
             "Adds a new code section to the exe. Works with or without the options above.\r\n\r\n" +
             "Status: tested in full missions (hangar launch, combat, end cutscene) together with our tester's " +
-            "other flight mods. With the installer's own option sets it is byte-checked but not yet flown.");
-        Check(g4, "mission7", "Any craft on Imperial Construction Yards (mission 7)",
-            "Mission 7 is airspeeder-only because it has AT-ATs, but you don't have to bring one down to win.\r\n\r\n" +
-            "Lets you pick the X-wing there, plus the A-wing, V-wing, Falcon and TIE Interceptor once you've unlocked them, the " +
-            "same as a normal X-wing mission, and the T-16 if that option is installed. The airspeeder stays the default " +
-            "in the hangar. Corellia, Escape from Fest and the Battle of Hoth stay airspeeder-only.\r\n\r\n" +
-            "Status: tested by our tester (the T-16 on this mission is new, not yet flown).");
+            "other mods.");
+        Check(g4, "anycraft", "Any craft on the airspeeder missions",
+            "Defection at Corellia, Imperial Construction Yards, Escape from Fest and the Battle of Hoth only let you " +
+            "fly the airspeeder, because they have AT-ATs.\r\n\r\n" +
+            "Lets you pick the X-wing there, plus the A-wing, V-wing, Falcon and TIE Interceptor once you've " +
+            "unlocked them, the same as a normal X-wing mission, and the T-16 if that option is installed. The " +
+            "airspeeder stays the default in the hangar. AT-ATs can still only be brought down with the airspeeder's " +
+            "tow cable, so where a mission needs that, take the airspeeder. (Replaces the earlier mission 7 only " +
+            "option.)\r\n\r\n" +
+            "Status: tested by our tester on mission 7 and on another airspeeder mission.");
+        Check(g4, "kessel", "Any craft on Rescue on Kessel, all with the ion cannon",
+            "Rescue on Kessel only lets you fly the Y-wing, because you need its ion cannon to stop the prison " +
+            "trains.\r\n\r\n" +
+            "Lets you pick any craft you've unlocked there (the Y-wing stays available and is still the default), " +
+            "and every craft gets the Y-wing's ion cannon as its secondary weapon on this mission, with unlimited " +
+            "shots like the Y-wing (the ammo number is hidden for it). With the T-16 option, the T-16's ion shots " +
+            "are aimed at its crosshair like its lasers.\r\n\r\n" +
+            "Status: tested.");
+        Check(g4, "nonah", "Killable Imperial landing craft (The Search for the Nonah)",
+            "The three Imperial landing craft in The Search for the Nonah have 1,000,000 health, so they can't be " +
+            "shot down.\r\n\r\n" +
+            "Lowers that to 10,000 (the Rebel shuttles have 2,000), so a sustained attack brings one down. Only " +
+            "craft with that huge health value are changed.\r\n\r\n" +
+            "Status: tested at 2,000 (too weak) and 20,000 health; the final 10,000 is not yet flown.");
+        Check(g4, "bios", "Kasan Moor's biography always reachable",
+            "Kasan Moor's page in Options > Biographies is only reachable once the game thinks you've got far " +
+            "enough, and on some finished pilots the arrow from Wes Janson's page to hers never appears.\r\n\r\n" +
+            "Always shows the arrow, so all six pages can be read.\r\n\r\nStatus: tested.");
+        Check(g4, "failselect", "Game over returns to mission select",
+            "When you run out of lives the game shows the high scores and drops you back to the main menu, so you " +
+            "have to load your pilot again to retry.\r\n\r\n" +
+            "Goes back to the mission select screen instead, with your lives reset, the same as after losing a " +
+            "life. Handy with the one life option.\r\n\r\nStatus: tested.");
         Check(g4, "repair", "Every craft repairs itself",
             "In the stock game only the craft with an astromech droid or a crew slowly repair damage: the X-wing, " +
             "Y-wing, Naboo starfighter and Millennium Falcon (full health in 3 minutes).\r\n\r\n" +
@@ -391,17 +420,21 @@ class InstallerForm : Form {
 
         // reflect what is installed now (defaults for a clean exe)
         bool clean = ReferenceEquals(baseExe, cur);
-        foreach (var k in new[] { "deadzone", "aimassist", "linear", "smallmoves", "widescreen", "ceiling", "gunsight", "hudnumbers" })
+        foreach (var k in new[] { "deadzone", "aimassist", "linear", "smallmoves", "widescreen", "ceiling", "gunsight", "hudnumbers", "bios" })
             Set(k, clean || PatchFor(k).IsIn(cur));
         Set("onelife", !clean && PatchFor("onelife").IsIn(cur));
-        Set("convergence", !clean && PatchFor("convergence").IsIn(cur));
+        // the T-16 section rewrites the section count (0xDE) and SizeOfImage (0x128) that convergence also sets
+        Set("convergence", !clean && new Patch("convergence", PatchFor("convergence").Runs.Where(r => r.Offset != 0xDE && r.Offset != 0x129).ToArray()).IsIn(cur));
         int button = 9;
         Set("rlflight", !clean && RlIsIn(cur, out button));
         rlButton.SelectedIndex = Math.Min(Math.Max(button, 1), 16) - 1;
         Set("lasers", !clean && PatchFor("lasers").IsIn(cur));
         Set("t16", !clean && (PatchFor("t16").IsIn(cur) || PatchFor("t16x").IsIn(cur)));
-        Set("mission7", !clean && PatchFor("mission7").IsIn(cur));
+        // the 1.2 "mission7" option is a subset of "anycraft" (same bytes), so it reads as anycraft
+        Set("anycraft", !clean && (PatchFor("anycraft").IsIn(cur) || PatchFor("mission7").IsIn(cur)));
         Set("repair", !clean && PatchFor("repair").IsIn(cur));
+        foreach (var k in new[] { "kessel", "nonah", "failselect" })
+            Set(k, !clean && PatchFor(k).IsIn(cur));
         if (!clean && PatchFor("widescreen").IsIn(cur)) {
             int w = BitConverter.ToInt32(cur, PatchData.ResolutionOffset), h = BitConverter.ToInt32(cur, PatchData.ResolutionOffset + 4);
             for (int i = 0; i < Resolutions.Length; i++) if (Resolutions[i][0] == w && Resolutions[i][1] == h) res.SelectedIndex = i;
@@ -412,7 +445,7 @@ class InstallerForm : Form {
     byte[] Build(List<string> applied) {
         var keys = new List<string>();
         // convergence before rlflight: RL flight's code goes into the section convergence adds
-        foreach (var k in new[] { "deadzone", "aimassist", "linear", "widescreen", "ceiling", "smallmoves", "convergence", "rlflight", "lasers", "mission7", "repair", "gunsight", "hudnumbers", "onelife" })
+        foreach (var k in new[] { "deadzone", "aimassist", "linear", "widescreen", "ceiling", "smallmoves", "convergence", "rlflight", "lasers", "anycraft", "kessel", "nonah", "bios", "repair", "gunsight", "hudnumbers", "onelife", "failselect" })
             if (On(k)) keys.Add(k);
         if (keys.Contains("rlflight") && !keys.Contains("convergence")) throw new InvalidOperationException("Rogue Leader flight needs laser convergence.");
         if (keys.Contains("convergence")) keys.Remove("aimassist");
@@ -430,7 +463,7 @@ class InstallerForm : Form {
         }
         if (keys.Contains("rlflight"))
             Buffer.BlockCopy(BitConverter.GetBytes(1 << rlButton.SelectedIndex), 0, img, PatchData.RlButtonOffset, 4);
-        if (On("t16")) { img = AddT16(img); applied.Add(Opt("t16").Title); }
+        if (On("t16")) { img = AddT16(img, keys.Contains("kessel")); applied.Add(Opt("t16").Title); }
         if (keys.Contains("widescreen")) {
             var r = Resolutions[res.SelectedIndex];
             Buffer.BlockCopy(BitConverter.GetBytes(r[0]), 0, img, PatchData.ResolutionOffset, 4);
@@ -441,17 +474,19 @@ class InstallerForm : Form {
     }
 
     // Appends the ".t16" section after the exe's last section (RVA 0x3FF000 on its own, 0x400000
-    // after the .conv section of the laser convergence option) and applies the runs built for that RVA.
-    static byte[] AddT16(byte[] img) {
+    // after the .conv section of the laser convergence option) and applies the runs built for that RVA:
+    // the 1.2 T-16 runs, the 1.3 update (camera, crosshair, turn values, hit boxes) and, with the
+    // Kessel option, the T-16 ion cannon aim.
+    static byte[] AddT16(byte[] img, bool ion) {
         int pe = BitConverter.ToInt32(img, 0x3C);
         int n = BitConverter.ToUInt16(img, pe + 6);
         int tab = pe + 24 + BitConverter.ToUInt16(img, pe + 20);
         int last = tab + (n - 1) * 40;
         int vs = BitConverter.ToInt32(img, last + 8), va = BitConverter.ToInt32(img, last + 12), rs = BitConverter.ToInt32(img, last + 16);
         int rva = (va + Math.Max(vs, rs) + 0xFFF) & ~0xFFF;
-        Patch p; byte[] sec;
-        if (rva == 0x3FF000) { p = PatchFor("t16"); sec = PatchData.T16Section_3FF000; }
-        else if (rva == 0x400000) { p = PatchFor("t16x"); sec = PatchData.T16Section_400000; }
+        Patch p, upd, pion; byte[] sec;
+        if (rva == 0x3FF000) { p = PatchFor("t16"); upd = PatchFor("t16b"); pion = PatchFor("t16ion"); sec = PatchData.T16Section_3FF000; }
+        else if (rva == 0x400000) { p = PatchFor("t16x"); upd = PatchFor("t16xb"); pion = PatchFor("t16xion"); sec = PatchData.T16Section_400000; }
         else throw new InvalidOperationException("Unexpected section layout for the T-16 (next RVA 0x" + rva.ToString("X") + ")");
         int size = PatchData.T16SectionSize, h = tab + n * 40;
         for (int i = 0; i < 40; i++) if (img[h + i] != 0) throw new InvalidOperationException("No free section header for the T-16");
@@ -466,7 +501,9 @@ class InstallerForm : Form {
         Buffer.BlockCopy(BitConverter.GetBytes(unchecked((int)0xE0000020)), 0, outp, h + 36, 4);
         Buffer.BlockCopy(BitConverter.GetBytes((ushort)(n + 1)), 0, outp, pe + 6, 2);
         Buffer.BlockCopy(BitConverter.GetBytes(rva + size), 0, outp, pe + 0x50, 4); // SizeOfImage
-        foreach (var r in p.Runs) {
+        var runs = p.Runs.Concat(upd.Runs);
+        if (ion) runs = runs.Concat(pion.Runs);
+        foreach (var r in runs) {
             for (int i = 0; i < r.Old.Length; i++)
                 if (outp[r.Offset + i] != r.Old[i]) throw new InvalidOperationException("Unexpected bytes at 0x" + r.Offset.ToString("X") + " for the T-16");
             Buffer.BlockCopy(r.New, 0, outp, r.Offset, r.New.Length);

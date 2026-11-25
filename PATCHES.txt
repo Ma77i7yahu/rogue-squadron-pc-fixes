@@ -136,7 +136,7 @@ Every 'old' value below has been checked against the original exe.
         ; airspeeder init (mov [rec+0x108], imm): ceiling above the terrain 10 -> 20
 
 ==============================================================================
-[mission7] Any craft on Imperial Construction Yards (mission 7)  (4 changes)
+[mission7] Any craft on Imperial Construction Yards (mission 7)  (4 changes)  - 1.3: no longer applied; superseded by [anycraft] below (same bytes), still read as that option
 ==============================================================================
   off 03C2CB  (VA 0043CECB .text)  518b4508ba010000008b0c8598845f00d3e28955fc -> 8b45088b0c8598845f0031d23c060f94c20fabca52
         ; hangar craft mask fn 43CEC8: mask = 1 << default craft, plus the X-wing bit when level == 6
@@ -877,3 +877,176 @@ Every 'old' value below has been checked against the original exe.
         ; lives init fn 0x43AE82: mov byte [0x704940 + player], 3 -> 1 (run at mission start / restart)
   off 07AF72  (VA 0047BB72)  b8b44700 -> 60b54700
         ; HUD slot draw switch 0x47B4B1, jump table 0x47BB6E entry 1 (lives number): 0x47B4B8 -> 0x47B560 (slot 0's never-draw case)
+
+==============================================================================
+2026-11-25 additions (version 1.3). Hand-written groups; see src\v13pkg\mkdata.py.
+==============================================================================
+
+==============================================================================
+[kessel] Any craft on Rescue on Kessel, all with the ion cannon  (6 changes)
+==============================================================================
+  off 03B278  (VA 0043BE78 .text)  c645fc008b450825ff0000008945f8 -> 0fb64508807d0c0174278945f89090
+        ; ammo fn 0x43BE72: weapon 1 (ion cannon) -> 0xFF (unlimited) for every craft
+        0043BE78  0fb64508                 movzx eax, byte ptr [ebp + 8]
+        0043BE7C  807d0c01                 cmp byte ptr [ebp + 0xc], 1
+        0043BE80  7427                     je 0x43bea9
+        0043BE82  8945f8                   mov dword ptr [ebp - 8], eax
+        0043BE85  90                       nop 
+  off 03B28C  (VA 0043BE8C .text)  50 -> 46
+  off 03C408  (VA 0043D008 .text)  8b4dfc83e103894dfc -> 834dfc028365fcef90
+        ; Kessel (level 8) hangar mask: |= 2 (Y-wing always), &= ~0x10
+        0043D008  834dfc02                 or dword ptr [ebp - 4], 2
+        0043D00C  8365fcef                 and dword ptr [ebp - 4], 0xffffffef
+  off 03C519  (VA 0043D119 .text)  8b45fc83e0038945fc -> 834dfc028365fcef90
+        ; same in the menu mask fn
+        0043D119  834dfc02                 or dword ptr [ebp - 4], 2
+        0043D11D  8365fcef                 and dword ptr [ebp - 4], 0xffffffef
+  off 03C62E  (VA 0043D22E .text)  7504 -> 9090
+        ; secondary weapon fn: ion cannon for every craft, not only craft 0
+        0043D22E  90                       nop 
+  off 07A8F8  (VA 0047B4F8 .text)  750d -> 9090
+        ; HUD: no ammo number for any craft carrying the ion cannon
+        0047B4F8  90                       nop 
+
+==============================================================================
+[anycraft] Any craft on the airspeeder missions (replaces [mission7]; the installer no longer applies [mission7], it only reads it as this option)  (10 changes)
+==============================================================================
+  off 03C2CB  (VA 0043CECB .text)  518b4508ba010000008b0c8598845f00d3e28955fc -> 8b45088b048598845f0031d23c040f94c20fabc252
+        ; hangar mask prologue: X-wing bit added when the level default craft is the airspeeder
+        0043CECB  8b4508                   mov eax, dword ptr [ebp + 8]
+        0043CECE  8b048598845f00           mov eax, dword ptr [eax*4 + 0x5f8498]
+        0043CED5  31d2                     xor edx, edx
+        0043CED7  3c04                     cmp al, 4
+        0043CED9  0f94c2                   sete dl
+        0043CEDC  0fabc2                   bts edx, eax
+        0043CEDF  52                       push edx
+  off 03C414  (VA 0043D014 .text)  03 -> ff
+        ; speeder-only level list (3,6,0xB,0x12) cmps -> -1
+  off 03C41A  (VA 0043D01A .text)  06 -> ff
+  off 03C420  (VA 0043D020 .text)  0b -> ff
+  off 03C426  (VA 0043D026 .text)  12 -> ff
+  off 03C44D  (VA 0043D04D .text)  518b4508ba010000008b0c8598845f00d3e28955fc -> 8b45088b048598845f0031d23c040f94c20fabc252
+        ; menu mask prologue, same
+        0043D04D  8b4508                   mov eax, dword ptr [ebp + 8]
+        0043D050  8b048598845f00           mov eax, dword ptr [eax*4 + 0x5f8498]
+        0043D057  31d2                     xor edx, edx
+        0043D059  3c04                     cmp al, 4
+        0043D05B  0f94c2                   sete dl
+        0043D05E  0fabc2                   bts edx, eax
+        0043D061  52                       push edx
+  off 03C525  (VA 0043D125 .text)  03 -> ff
+  off 03C52B  (VA 0043D12B .text)  06 -> ff
+  off 03C531  (VA 0043D131 .text)  0b -> ff
+  off 03C537  (VA 0043D137 .text)  12 -> ff
+
+==============================================================================
+[nonah] Killable Imperial landing craft (The Search for the Nonah)  (1 changes)
+==============================================================================
+  off 0A86C1  (VA 004A92C1 .text)  f88b4834894dfc8b55fc528b45fc83c06c508b4df88b513852 -> fc80786e007407c7406c102700005083c06c508b4df8ff7138
+        ; Shuttle HP callback 0x4A92BF: HP >= 65536 (lifters, 1,000,000) -> 10000
+        004A92BF  8b45fc                   mov eax, dword ptr [ebp - 4]
+        004A92C2  80786e00                 cmp byte ptr [eax + 0x6e], 0
+        004A92C6  7407                     je 0x4a92cf
+        004A92C8  c7406c10270000           mov dword ptr [eax + 0x6c], 0x2710
+
+==============================================================================
+[bios] Kasan Moor's biography always reachable  (1 changes)
+==============================================================================
+  off 03C6EE  (VA 0043D2EE .text)  7c04 -> 9090
+        ; bio page count 0x43D2E0: jl NOPped, Kasan Moor page always reachable
+        0043D2EE  90                       nop 
+
+==============================================================================
+[failselect] Game over returns to mission select  (2 changes)
+==============================================================================
+  off 06C5A8  (VA 0046D1A8 .text)  c6056149700000 -> e8d5dcfcff9090
+        ; game-over block 0x46D1A8: call 0x43AE82 (reset lives, game stays in progress)
+        0046D1A8  e8d5dcfcff               call 0x43ae82
+        0046D1AD  90                       nop 
+  off 06C5D7  (VA 0046D1D7 .text)  01 -> 00
+        ; 0x704962 high-score flag 1 -> 0: back to mission select
+
+==============================================================================
+[t16b] T-16 update 1.3: X-wing turn values, crosshair, chase camera, hit boxes  (12 changes)  - .t16 at VA 007FF000 (T-16 without laser convergence)
+==============================================================================
+  off 01BC40  (VA 0041C840 .text)  6666e6 -> cdcccc
+        ; T-16 init 0x41C780: X-wing turn values (F8 1.6, FC 1.75, P114 -30, P118 40)
+  off 01BC4F  (VA 0041C84F .text)  0040 -> e03f
+  off 01BC9D  (VA 0041C89D .text)  0cc2 -> f0c1
+  off 01BCAA  (VA 0041C8AA .text)  f041 -> 2042
+  off 021FAC  (VA 00422BAC .text)  18 -> 0c
+        ; gunsight 0x422B50 T-16 branch: near/far points along fwd (+0xC/+0x10/+0x14)
+  off 021FBB  (VA 00422BBB .text)  1c -> 10
+  off 021FCA  (VA 00422BCA .text)  20 -> 14
+  off 1BEC68  (VA 005BF868 .rdata)  3333333f -> 00004041
+        ; T-16 sight distance constant 0.7 -> 12.0
+  off 1F4DD2  (VA 005F65D2 .data)  90 -> e0
+        ; T-16 chase camera (mode 2) = X-wing mode 2 x3
+  off 1F4DF2  (VA 005F65F2 .data)  40c1000000c0 -> d8c0999979c1
+  off 1F4DFE  (VA 005F65FE .data)  b0c0000020 -> c0bf0000f6
+  off 01C561  (VA 0041D161 .text)  8b4df88901 -> e89a283e00
+
+==============================================================================
+[t16xb] T-16 update 1.3 (same, .t16 after .conv)  (12 changes)  - .t16 at VA 00800000 (after .conv)
+==============================================================================
+  off 01BC40  (VA 0041C840 .text)  6666e6 -> cdcccc
+        ; T-16 init 0x41C780: X-wing turn values (F8 1.6, FC 1.75, P114 -30, P118 40)
+  off 01BC4F  (VA 0041C84F .text)  0040 -> e03f
+  off 01BC9D  (VA 0041C89D .text)  0cc2 -> f0c1
+  off 01BCAA  (VA 0041C8AA .text)  f041 -> 2042
+  off 021FAC  (VA 00422BAC .text)  18 -> 0c
+        ; gunsight 0x422B50 T-16 branch: near/far points along fwd (+0xC/+0x10/+0x14)
+  off 021FBB  (VA 00422BBB .text)  1c -> 10
+  off 021FCA  (VA 00422BCA .text)  20 -> 14
+  off 1BEC68  (VA 005BF868 .rdata)  3333333f -> 00004041
+        ; T-16 sight distance constant 0.7 -> 12.0
+  off 1F4DD2  (VA 005F65D2 .data)  90 -> e0
+        ; T-16 chase camera (mode 2) = X-wing mode 2 x3
+  off 1F4DF2  (VA 005F65F2 .data)  40c1000000c0 -> d8c0999979c1
+  off 1F4DFE  (VA 005F65FE .data)  b0c0000020 -> c0bf0000f6
+  off 01C561  (VA 0041D161 .text)  8b4df88901 -> e89a383e00
+        0041D161  e89a383e00               call 0x800a00
+
+==============================================================================
+[t16ion] T-16 ion cannon aim (with the Kessel option)  (1 changes)  - .t16 at VA 007FF000
+==============================================================================
+  off 0235DB  (VA 004241DB .text)  83c4188b15fc4d7000 -> e80ab73d0090909090
+
+==============================================================================
+[t16xion] T-16 ion cannon aim (with the Kessel option, .t16 after .conv)  (1 changes)  - .t16 at VA 00800000
+==============================================================================
+  off 0235DB  (VA 004241DB .text)  83c4188b15fc4d7000 -> e80ac73d0090909090
+        004241DB  e80ac73d00               call 0x8008ea
+        004241E0  90                       nop 
+
+==============================================================================
+[.t16 section data] T-16 update 1.3 (both T16Section arrays)
+==============================================================================
+  .t16+0x64C  TANDOWN (tan of the aim-down angle) 0.1317 (7.5 deg) -> -0.025 (about 1.4 deg up; the crosshair and camera moved)
+  .t16+0xA00  hit-box hook cave, called from 0x41D161 (T-16 create):
+              mov ecx,[ebp-8] / mov [ecx],eax (replayed); if model && model data: [[model]+0x58] = .t16+0xA40; ret
+  .t16+0xA40  collision list: 13 boxes of 0x1C bytes (u8 kind 0, u8 node 0, u16 0, min xyz, max xyz floats, model units)
+              body, 4 stepped fin boxes, 4 stepped boxes per wing; ends with node 0xFF (src\v13\t16hitbox.py, margin 1.5)
+        00800A00  8b4df8                   mov ecx, dword ptr [ebp - 8]
+        00800A03  8901                     mov dword ptr [ecx], eax
+        00800A05  85c0                     test eax, eax
+        00800A07  740d                     je 0x800a16
+        00800A09  8b10                     mov edx, dword ptr [eax]
+        00800A0B  85d2                     test edx, edx
+        00800A0D  7407                     je 0x800a16
+        00800A0F  c74258400a8000           mov dword ptr [edx + 0x58], 0x800a40
+        00800A16  c3                       ret 
+        box  0  kind 0 node 00  min (  -8.50  -12.50  -10.80)  max (   8.50   12.50   26.40)
+        box  1  kind 0 node 00  min (  -1.90  -20.00  -10.80)  max (   1.90  -12.00   14.71)
+        box  2  kind 0 node 00  min (  -1.90  -28.00  -10.80)  max (   1.90  -20.00   10.61)
+        box  3  kind 0 node 00  min (  -1.90  -36.00  -10.80)  max (   1.90  -28.00    6.50)
+        box  4  kind 0 node 00  min (  -1.90  -45.50  -10.80)  max (   1.90  -36.00    2.39)
+        box  5  kind 0 node 00  min (   8.00   -0.51   -6.91)  max (  16.00    7.16    5.89)
+        box  6  kind 0 node 00  min ( -16.00   -0.51   -6.91)  max (  -8.00    7.16    5.89)
+        box  7  kind 0 node 00  min (  16.00    4.16   -6.91)  max (  24.00   11.84    4.41)
+        box  8  kind 0 node 00  min ( -24.00    4.16   -6.91)  max ( -16.00   11.84    4.41)
+        box  9  kind 0 node 00  min (  24.00    8.84   -6.91)  max (  32.00   16.51    2.93)
+        box 10  kind 0 node 00  min ( -32.00    8.84   -6.91)  max ( -24.00   16.51    2.93)
+        box 11  kind 0 node 00  min (  32.00   13.51   -6.91)  max (  38.30   19.45    1.44)
+        box 12  kind 0 node 00  min ( -38.30   13.51   -6.91)  max ( -32.00   19.45    1.44)
+        box 13  kind 0 node FF  min (   0.00    0.00    0.00)  max (   0.00    0.00    0.00)
